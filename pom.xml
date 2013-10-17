@@ -1,11 +1,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>at.redlink.nodekeeper</groupId>
+    <groupId>at.salzburgresearch.nodekeeper</groupId>
     <artifactId>nodekeeper-utils</artifactId>
     <packaging>bundle</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>nodekeeper-utils</name>
+
+    <distributionManagement>
+        <repository>
+            <id>snml.releases</id>
+            <name>Salzburg NewMediaLab Repository</name>
+            <url>http://devel.kiwi-project.eu:8080/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snml.snapshots</id>
+            <name>Salzburg NewMediaLab Repository</name>
+            <url>http://devel.kiwi-project.eu:8080/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>at.salzburgresearch.nodekeeper</id>
+            <url>https://bitbucket.org/tkurz/nodekeeper</url>
+        </site>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>snml</id>
+            <name>Salzburg NewMediaLab Repository</name>
+            <url>http://devel.kiwi-project.eu:8080/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snml</id>
+            <name>Salzburg NewMediaLab Repository</name>
+            <url>http://devel.kiwi-project.eu:8080/nexus/content/groups/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <finalName>nodekeeper-utils</finalName>
         <plugins>
