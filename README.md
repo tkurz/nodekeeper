@@ -95,3 +95,11 @@ listener methods are called immediately.
 
     //read string node
     Node<String> node = nodeKeeper.readNode(nodePath1,String.class);
+
+#Contact
+Thomas Kurz, Salzburg Research Forschungsgesellschaft, Salzburg, Austria
+
+<thomas.kurz@salzburgresearch.at>
+
+#License
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html)
