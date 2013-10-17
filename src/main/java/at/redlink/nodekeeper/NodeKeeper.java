@@ -86,7 +86,6 @@ public class NodeKeeper implements Watcher {
             deleteRemoved();
             appendWatcherToSubnodes(startNode);
         } catch (KeeperException e) {
-            e.printStackTrace();
             throw new NodeKeeperException("cannot append listeners");
         }
     }
@@ -194,7 +193,6 @@ public class NodeKeeper implements Watcher {
                 }
             }
         } catch (KeeperException e) {
-            e.printStackTrace();
             throw new NodeKeeperException("cannot read node");
         }
         return null;
@@ -209,7 +207,6 @@ public class NodeKeeper implements Watcher {
                 zk.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
         } catch (KeeperException e) {
-            e.printStackTrace();
             throw new NodeKeeperException(String.format("error while creating node '#s'", path));
         }
     }
@@ -245,7 +242,6 @@ public class NodeKeeper implements Watcher {
                 }
             }
         } catch (KeeperException e) {
-            e.printStackTrace();
             throw new NodeKeeperException(String.format("cannot write data for node '%s'", node.getPath()));
         }
     }
@@ -264,7 +260,6 @@ public class NodeKeeper implements Watcher {
                 zk.delete(node.getPath(),stat.getVersion());
             }
         } catch (KeeperException e) {
-            e.printStackTrace();
             throw new NodeKeeperException(String.format("cannot delete node '%s'", node.getPath()));
         }
     }
@@ -278,10 +273,8 @@ public class NodeKeeper implements Watcher {
             }
             return nodes;
         } catch (KeeperException e) {
-            e.printStackTrace();
             throw new NodeKeeperException(String.format("cannot read children for '%s'", path));
         } catch (IOException e) {
-            e.printStackTrace();
             throw new NodeKeeperException(String.format("cannot read children for '%s'", path));
         }
     }
