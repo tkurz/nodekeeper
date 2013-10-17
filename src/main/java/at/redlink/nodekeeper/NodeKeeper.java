@@ -104,7 +104,7 @@ public class NodeKeeper implements Watcher {
         }
     }
 
-    public void handleNode(String path, Stat stat, Event.EventType version) throws KeeperException, InterruptedException, NodeKeeperException, IOException {
+    private void handleNode(String path, Stat stat, Event.EventType version) throws KeeperException, InterruptedException, NodeKeeperException, IOException {
         setStatus(path, stat.getVersion());
         for(String pattern : listeners.keySet()) {
             if(path.matches(pattern)) {
