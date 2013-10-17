@@ -55,8 +55,8 @@ NodeKeeper supports the following node operations:
 
 ##NodeListener
 
-NodeKeeper allows to add listeners to pathPatterns, so you can handle CRUD events on that nodes. The listener must implement
-the interface NodeListener:
+NodeKeeper allows to add listeners to pathPatterns, so you can handle CRUD events on that nodes. The listener must extend
+the abstract class NodeListener:
 
     public abstract void onNodeCreated(Node<T> node) throws InterruptedException, NodeKeeperException;
     public abstract void onNodeUpdated(Node<T> node) throws InterruptedException, NodeKeeperException;
