@@ -9,8 +9,16 @@
     <description>NodeKeeper is a simple to use library on the top of ZooKeeper. It allows to create, read, update and delete zk-nodes, supports custom datatypes and allows to listen and react on node events (create, update, delete) based on path patterns.</description>
     <scm>
         <url>https://bitbucket.org/srfgkmt/nodekeeper</url>
-        <connection>https://bitbucket.org/srfgkmt/nodekeeper.git</connection>
+        <connection>scm:git:https://bitbucket.org/srfgkmt/nodekeeper</connection>
+        <developerConnection>scm:git:https://bitbucket.org/srfgkmt/nodekeeper</developerConnection>
     </scm>
+    
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+    
     <developers>
         <developer>
             <id>tkurz</id>
