@@ -1,4 +1,4 @@
-package at.redlink.nodekeeper.exception;
+package at.salzburgresearch.nodekeeper.exception;
 
 import java.lang.Exception;import java.lang.String; /**
  * The Exception is thrown by several NodeKeeper methods.

@@ -1,12 +1,12 @@
-package at.redlink.nodekeeper;
+package at.salzburgresearch.nodekeeper;
 
-import at.redlink.nodekeeper.exception.NodeKeeperException;
-import at.redlink.nodekeeper.handlers.DataHandler;
-import at.redlink.nodekeeper.handlers.impl.BooleanHandler;
-import at.redlink.nodekeeper.handlers.impl.DictionaryDataHandler;
-import at.redlink.nodekeeper.handlers.impl.IntegerHandler;
-import at.redlink.nodekeeper.handlers.impl.StringDataHandler;
-import at.redlink.nodekeeper.model.Node;
+import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
+import at.salzburgresearch.nodekeeper.handlers.DataHandler;
+import at.salzburgresearch.nodekeeper.handlers.impl.BooleanHandler;
+import at.salzburgresearch.nodekeeper.handlers.impl.DictionaryDataHandler;
+import at.salzburgresearch.nodekeeper.handlers.impl.IntegerHandler;
+import at.salzburgresearch.nodekeeper.handlers.impl.StringDataHandler;
+import at.salzburgresearch.nodekeeper.model.Node;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
@@ -181,7 +181,7 @@ public class NodeKeeper implements Watcher {
      * @param <T> class of the node, is handled by handler
      * @return
      * @throws InterruptedException
-     * @throws at.redlink.nodekeeper.exception.NodeKeeperException
+     * @throws at.salzburgresearch.nodekeeper.exception.NodeKeeperException
      */
     public <T> Node<T> readNode(String path, Class<T> clazz) throws InterruptedException, NodeKeeperException, IOException {
         try {

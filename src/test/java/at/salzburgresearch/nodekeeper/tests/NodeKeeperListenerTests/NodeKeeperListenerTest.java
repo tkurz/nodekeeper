@@ -1,10 +1,9 @@
-package at.reddlink.nodekeeper.tests.NodeKeeperListenerTests;
+package at.salzburgresearch.nodekeeper.tests.NodeKeeperListenerTests;
 
-import at.reddlink.nodekeeper.tests.NodeKeeperTest;
-import at.redlink.nodekeeper.NodeKeeper;
-import at.redlink.nodekeeper.NodeListener;
-import at.redlink.nodekeeper.exception.NodeKeeperException;
-import at.redlink.nodekeeper.model.Node;
+import at.salzburgresearch.nodekeeper.tests.NodeKeeperTest;
+import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
+import at.salzburgresearch.nodekeeper.model.Node;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

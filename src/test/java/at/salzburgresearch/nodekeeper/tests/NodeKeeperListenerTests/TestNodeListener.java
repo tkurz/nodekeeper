@@ -1,8 +1,8 @@
-package at.reddlink.nodekeeper.tests.NodeKeeperListenerTests;
+package at.salzburgresearch.nodekeeper.tests.NodeKeeperListenerTests;
 
-import at.redlink.nodekeeper.NodeListener;
-import at.redlink.nodekeeper.exception.NodeKeeperException;
-import at.redlink.nodekeeper.model.Node;
+import at.salzburgresearch.nodekeeper.NodeListener;
+import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
+import at.salzburgresearch.nodekeeper.model.Node;
 
 /**
  * ...

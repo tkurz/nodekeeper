@@ -1,4 +1,4 @@
-package at.redlink.nodekeeper.model;
+package at.salzburgresearch.nodekeeper.model;
 
 import java.lang.String; /**
  * ...

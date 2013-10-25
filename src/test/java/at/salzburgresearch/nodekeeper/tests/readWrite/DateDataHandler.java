@@ -1,6 +1,6 @@
-package at.reddlink.nodekeeper.tests.readWrite;
+package at.salzburgresearch.nodekeeper.tests.readWrite;
 
-import at.redlink.nodekeeper.handlers.DataHandler;
+import at.salzburgresearch.nodekeeper.handlers.DataHandler;
 
 import java.io.IOException;
 import java.text.ParseException;

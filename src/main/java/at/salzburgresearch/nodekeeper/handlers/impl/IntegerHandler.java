@@ -1,6 +1,6 @@
-package at.redlink.nodekeeper.handlers.impl;
+package at.salzburgresearch.nodekeeper.handlers.impl;
 
-import at.redlink.nodekeeper.handlers.DataHandler;
+import at.salzburgresearch.nodekeeper.handlers.DataHandler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

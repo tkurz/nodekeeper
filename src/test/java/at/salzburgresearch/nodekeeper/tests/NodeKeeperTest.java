@@ -1,26 +1,17 @@
-package at.reddlink.nodekeeper.tests;
+package at.salzburgresearch.nodekeeper.tests;
 
-import at.redlink.nodekeeper.NodeKeeper;
-import at.redlink.nodekeeper.exception.NodeKeeperException;
-import at.redlink.nodekeeper.model.Node;
-import junit.framework.TestCase;
+import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import org.apache.commons.io.FileUtils;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * ...

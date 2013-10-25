@@ -1,4 +1,4 @@
-package at.redlink.nodekeeper.handlers;
+package at.salzburgresearch.nodekeeper.handlers;
 
 import java.io.IOException;import java.lang.Class;
 

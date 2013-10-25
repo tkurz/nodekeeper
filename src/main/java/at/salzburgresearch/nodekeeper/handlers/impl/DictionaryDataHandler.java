@@ -1,6 +1,6 @@
-package at.redlink.nodekeeper.handlers.impl;
+package at.salzburgresearch.nodekeeper.handlers.impl;
 
-import at.redlink.nodekeeper.handlers.DataHandler;
+import at.salzburgresearch.nodekeeper.handlers.DataHandler;
 import org.apache.felix.cm.file.ConfigurationHandler;
 
 import java.io.ByteArrayInputStream;import java.io.ByteArrayOutputStream;import java.io.IOException;import java.io.InputStream;import java.lang.Class;import java.lang.Override;import java.util.Dictionary;

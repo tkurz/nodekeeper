@@ -1,8 +1,8 @@
-package at.reddlink.nodekeeper.tests.readWrite;
+package at.salzburgresearch.nodekeeper.tests.readWrite;
 
-import at.reddlink.nodekeeper.tests.NodeKeeperTest;
-import at.redlink.nodekeeper.exception.NodeKeeperException;
-import at.redlink.nodekeeper.model.Node;
+import at.salzburgresearch.nodekeeper.tests.NodeKeeperTest;
+import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
+import at.salzburgresearch.nodekeeper.model.Node;
 import org.junit.Test;
 
 import java.io.IOException;

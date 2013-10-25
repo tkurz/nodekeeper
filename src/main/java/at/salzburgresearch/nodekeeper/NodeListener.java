@@ -1,7 +1,8 @@
-package at.redlink.nodekeeper;
+package at.salzburgresearch.nodekeeper;
 
-import at.redlink.nodekeeper.exception.NodeKeeperException;
-import at.redlink.nodekeeper.model.Node;
+
+import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
+import at.salzburgresearch.nodekeeper.model.Node;
 
 import java.lang.Class;import java.lang.InterruptedException; /**
  * The interface must be used by handlers that are appended to NodeKeeper. The generic type for the listener must be
