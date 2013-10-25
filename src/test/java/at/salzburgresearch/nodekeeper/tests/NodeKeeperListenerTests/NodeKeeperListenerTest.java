@@ -149,15 +149,15 @@ public class NodeKeeperListenerTest extends NodeKeeperTest {
         nodeKeeper.startListeners();
 
         nodeKeeper.writeNode(new Node(path1,path1),String.class);
-        Thread.sleep(10);
+        Thread.sleep(50);
         assertEquals(data[0], path1);
 
         nodeKeeper.writeNode(new Node(path2,path2),String.class);
-        Thread.sleep(10);
+        Thread.sleep(50);
         assertEquals(data[0],path2);
 
         nodeKeeper.writeNode(new Node(path3, path3), String.class);
-        Thread.sleep(10);
+        Thread.sleep(50);
         assertEquals(data[0],path3);
 
         nodeKeeper.writeNode(new Node(path4,path4),String.class);
