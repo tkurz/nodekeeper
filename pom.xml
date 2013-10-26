@@ -41,7 +41,7 @@
                         <Private-Package>
                         </Private-Package>
                         <Export-Package>
-                            at.redlink.nodekeeper.*;version=${project.version}
+                            at.salzburgresearch.nodekeeper.*;version=${project.version}
                         </Export-Package>
                     </instructions>
                 </configuration>
