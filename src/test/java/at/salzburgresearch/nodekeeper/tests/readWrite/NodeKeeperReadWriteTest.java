@@ -3,6 +3,7 @@ package at.salzburgresearch.nodekeeper.tests.readWrite;
 import at.salzburgresearch.nodekeeper.tests.NodeKeeperTest;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,20 +31,6 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
         Node<String> node = nodeKeeper.readNode(path,String.class);
 
         assertEquals(node.getData(),data);
-    }
-
-    @Test
-    public void writeDictionaryDataTest() throws NodeKeeperException, InterruptedException, IOException {
-        Dictionary dic = new Hashtable(){{
-            put("value","one");
-        }};
-        String path = "/node";
-
-        nodeKeeper.writeNode(new Node<Dictionary>(path,dic),Dictionary.class);
-
-        Node<Dictionary> node = nodeKeeper.readNode(path,Dictionary.class);
-
-        assertEquals(node.getData(),dic);
     }
 
     @Test
@@ -129,6 +116,7 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
         assertTrue(node2.getVersion() == 1);
     }
 
+    @Test
     public void deleteNode() throws NodeKeeperException, InterruptedException, IOException {
         int data = 123;
         String path = "/node";
@@ -145,6 +133,7 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
 
     }
 
+    @Test
     public void deleteEmpytNode() throws NodeKeeperException, InterruptedException {
         int data = 123;
         String path = "/node";
@@ -152,15 +141,16 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
     }
 
     @Test
+    @Ignore
     public void wrongClassCast() throws NodeKeeperException, InterruptedException, IOException {
-        int data = 123;
+        String data = "Test";
         String path = "/node";
 
-        nodeKeeper.writeNode(new Node<Integer>(path,data),Integer.class);
+        nodeKeeper.writeNode(new Node<String>(path,data),String.class);
 
         try {
-            Node<Dictionary> node = nodeKeeper.readNode(path,Dictionary.class);
-            fail("String node should not be parsable to Dictionary");
+            Node<Boolean> node = nodeKeeper.readNode(path,Boolean.class);
+            fail("String node should not be parsable to Boolean");
         } catch (IOException e) {
             //success
         }
