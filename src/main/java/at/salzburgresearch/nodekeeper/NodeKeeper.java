@@ -3,7 +3,6 @@ package at.salzburgresearch.nodekeeper;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.handlers.DataHandler;
 import at.salzburgresearch.nodekeeper.handlers.impl.BooleanHandler;
-import at.salzburgresearch.nodekeeper.handlers.impl.DictionaryDataHandler;
 import at.salzburgresearch.nodekeeper.handlers.impl.IntegerHandler;
 import at.salzburgresearch.nodekeeper.handlers.impl.StringDataHandler;
 import at.salzburgresearch.nodekeeper.model.Node;
@@ -61,7 +60,6 @@ public class NodeKeeper implements Watcher {
 
         //add default handlers
         this.addDataHandler(new StringDataHandler());
-        this.addDataHandler(new DictionaryDataHandler());
         this.addDataHandler(new IntegerHandler());
         this.addDataHandler(new BooleanHandler());
 
@@ -104,7 +102,6 @@ public class NodeKeeper implements Watcher {
     }
 
     private void handleNode(String path, Stat stat, Event.EventType version) throws KeeperException, InterruptedException, NodeKeeperException, IOException {
-        setStatus(path, stat.getVersion());
         for(String pattern : listeners.keySet()) {
             if(path.matches(pattern)) {
                 for(NodeListener listener : listeners.get(pattern)) {
@@ -112,21 +109,21 @@ public class NodeKeeper implements Watcher {
                         switch (version) {
                             case NodeCreated:
                                 listener.onNodeCreated(new Node(path,handlers.get(listener.getType()).parse(zk.getData(path,this,stat))));
-                                setStatus(path,stat.getVersion());
                                 break;
                             case NodeDataChanged:
                                 listener.onNodeUpdated(new Node(path,handlers.get(listener.getType()).parse(zk.getData(path,this,stat))));
-                                setStatus(path,stat.getVersion());
                                 break;
                             case NodeDeleted:
                                 listener.onNodeDeleted(new Node(path));
-                                removeStatus(path);
                                 break;
                         }
                     } else throw new NodeKeeperException(String.format("cannot handle type %s",listener.getType()));
                 }
             }
         }
+        if(version == Event.EventType.NodeDeleted)
+            removeStatus(path);
+        else setStatus(path, stat.getVersion());
     }
 
     @Override

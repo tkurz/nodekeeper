@@ -179,11 +179,22 @@ public class NodeKeeperListenerTest extends NodeKeeperTest {
         nodeKeeper.deleteNode(new Node(path));            //2:1
         nodeKeeper.writeNode(new Node(path,""),String.class);//0:2
         nodeKeeper.writeNode(new Node(path,""),String.class);//1:4
-        Thread.sleep(10);
+        Thread.sleep(50);
         assertEquals(data[0],"2");
         assertEquals(data[1],"4");
         assertEquals(data[2],"1");
 
+    }
+
+    @Test
+    public void testNotListenedEvent() throws NodeKeeperException, IOException, InterruptedException {
+        String path = "/test";
+        nodeKeeper.addListener("/test", new CountingNodeListener());
+        nodeKeeper.startListeners();
+        Thread.sleep(50);
+        nodeKeeper.writeNode(new Node(path,"123"),String.class);
+        Thread.sleep(50);
+        nodeKeeper.deleteNode(new Node(path));
     }
 
     @Test
