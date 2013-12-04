@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rules>
+    <rule name="test_rule">
+        <event type="nodeUpdated">
+            <param>/my/event/.+</param>
+        </event>
+        <bindings>
+            <binding name="label" type="toUpperCase">
+                <param type="currentNodeLabel"/>
+            </binding>
+        </bindings>
+        <!-- <condition></condition> -->
+        <actions>
+            <action type="deleteNode">
+                <param>/my/action/$label</param>
+            </action>
+        </actions>
+    </rule>
+</rules>

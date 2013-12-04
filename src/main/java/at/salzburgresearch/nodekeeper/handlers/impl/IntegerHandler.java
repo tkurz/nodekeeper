@@ -15,16 +15,12 @@ public class IntegerHandler implements DataHandler<Integer> {
 
     @Override
     public Integer parse(byte[] data) throws IOException {
-        ByteBuffer buffer= ByteBuffer.allocate(4);
-        buffer.put(data);
-        return buffer.getInt(0);
+        return Integer.parseInt(new String(data));
     }
 
     @Override
     public byte[] serialize(Integer data) throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(4);
-        buffer.putInt(data);
-        return buffer.array();
+        return String.valueOf(data).getBytes();
     }
 
     @Override

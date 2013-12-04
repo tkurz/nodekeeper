@@ -52,6 +52,19 @@ public class NodeKeeper implements Watcher {
      * @throws IOException
      * @throws InterruptedException
      */
+    public NodeKeeper(String connectionString, int sessionTimeout, Properties properties) throws InterruptedException, NodeKeeperException, IOException {
+        this(connectionString, sessionTimeout, properties,null);
+    }
+
+    /**
+     * NodeKeeper enables a ZooKeeper connection.
+     * @param connectionString comma-separated list of url-strings of ZooKeeper servers
+     * @param sessionTimeout sessionTimeout for connection
+     * @param properties should be persisted at the end to guarantee clean node versioning (on re-startup)
+     * @param startNode juts children of this node and the node itself are taken into account
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public NodeKeeper(String connectionString, int sessionTimeout, Properties properties, String startNode) throws InterruptedException, IOException, NodeKeeperException {
         this.properties = properties;
         this.startNode = startNode == null ? "/" : startNode;
@@ -144,12 +157,12 @@ public class NodeKeeper implements Watcher {
             Thread.currentThread().interrupt();
             e.printStackTrace();
         } catch (KeeperException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (NodeKeeperException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        }
+            //e.printStackTrace();
+        } //TODO how to handle exceptions here?
     }
 
     /**
@@ -276,6 +289,18 @@ public class NodeKeeper implements Watcher {
         }
     }
 
+    public int nbOfChildren(String path) throws NodeKeeperException, InterruptedException {
+        try {
+            return zk.getChildren(path,false).size();
+        } catch (KeeperException e) {
+            throw new NodeKeeperException(String.format("cannot read children for '%s'", path));
+        }
+    }
+
+    public boolean hasChildren(String path) throws NodeKeeperException, InterruptedException {
+        return nbOfChildren(path) > 0;
+    }
+
     /**
      * Appends a listener to the pathPattern. The methods of the lister are called when a node that matches the pathPattern
      * is created, updated or deleted.
@@ -289,6 +314,12 @@ public class NodeKeeper implements Watcher {
             listeners.put(pathPattern,new ArrayList<NodeListener>());
         }
         listeners.get(pathPattern).add(listener);
+    }
+
+    public void removeListener(String pathPattern, NodeListener listener) {
+        if(listeners.containsKey(pathPattern)) {
+            if(listeners.get(pathPattern).contains(listener)) listeners.get(pathPattern).remove(listener);
+        }
     }
 
     private void deleteRemoved() throws KeeperException, InterruptedException, NodeKeeperException {
@@ -312,6 +343,18 @@ public class NodeKeeper implements Watcher {
      */
     public void addDataHandler(DataHandler dataHandler) {
         handlers.put(dataHandler.getType(),dataHandler);
+    }
+
+    public DataHandler getDataHandler(Class clazz) {
+        return handlers.get(clazz);
+    }
+
+    public List<DataHandler> listDataHandlers() {
+        List<DataHandler> dataHandlers = new ArrayList<DataHandler>();
+        for(Class clazz : handlers.keySet()) {
+            dataHandlers.add(handlers.get(clazz));
+        }
+        return dataHandlers;
     }
 
     private Event.EventType getStatus (String path, int version) throws KeeperException, InterruptedException {

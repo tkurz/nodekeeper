@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rules>
+    <rule name="test_rule">
+        <event type="nodeCreated">
+            <param>/my/event/.+</param>
+        </event>
+        <bindings>
+            <binding name="data" type="currentNodeData"/>
+            <binding name="label" type="toUpperCase">
+                <param type="currentNodeLabel"/>
+            </binding>
+            <binding name="test" type="nodeData">
+                <param>/test/data</param>
+            </binding>
+            <binding name="stat">Test</binding>
+        </bindings>
+        <!-- <condition></condition> -->
+        <actions>
+            <action type="createUpdateNode">
+                <param>/my/action/$label</param>
+                <param>Hello $data: $stat</param>
+            </action>
+        </actions>
+    </rule>
+</rules>

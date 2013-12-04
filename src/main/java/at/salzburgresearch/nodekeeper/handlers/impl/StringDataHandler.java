@@ -10,6 +10,7 @@ import at.salzburgresearch.nodekeeper.handlers.DataHandler;
 public class StringDataHandler implements DataHandler<String> {
     @Override
     public String parse(byte[] data) {
+        if(data == null) return "";
         return new String(data);
     }
 
