@@ -44,7 +44,7 @@ public class RuleHandler {
     public void readRules(InputStream stream) throws NodeKeeperException, IOException, InterruptedException {
         //remove old rules
         List<Rule> rs = InputOutputHandler.parseRules(stream);
-        Set<String> keys = rules.keySet();
+        ArrayList<String> keys = new ArrayList<String>(rules.keySet());
         for(String ruleid : keys) {
             removeRule(rules.get(ruleid));
         }
