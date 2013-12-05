@@ -144,7 +144,8 @@ public class NodeKeeper implements Watcher {
         try {
             if (watchedEvent.getType() == Event.EventType.NodeChildrenChanged) {
                 //a child has been added
-                for(String child : zk.getChildren(watchedEvent.getPath(),this)) {
+                final List<String> children = new ArrayList<String>(zk.getChildren(watchedEvent.getPath(), this));
+                for(String child : children) {
                     appendWatcherToSubnodes(watchedEvent.getPath().equals("/") ? "/" + child : watchedEvent.getPath() + "/" + child);
                 }
             } else {
