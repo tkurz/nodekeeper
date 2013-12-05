@@ -1,18 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rules>
-    <rule name="test_rule">
-        <event type="nodeUpdated">
-            <param>/my/event/.+</param>
+    <rule name="dataset_created_updated">
+        <event type="nodeCreatedUpdated">
+            <param>/users/[^/]+/dataset/[^/]+/version</param>
         </event>
         <bindings>
-            <binding name="label" type="toUpperCase">
-                <param type="currentNodeLabel"/>
+            <binding name="name" type="pathNode">
+                <param>4</param>
+            </binding>
+            <binding name="kiwi_yard" type="searchReplace">
+                <param type="nodeData">
+                    <param>/stanbol/factories/sites/test.config</param>
+                </param>
+                <param type="pathNode">
+                    <param>4</param>
+                </param>
             </binding>
         </bindings>
-        <!-- <condition></condition> -->
+        <actions>
+            <action type="createUpdateNode">
+                <param>/stanbol/instances/sites/{name}_kiwi_yard</param>
+                <param>{kiwi_yard}</param>
+            </action>
+        </actions>
+    </rule>
+    <rule name="dataset_created_updated">
+        <event type="nodeDeleted">
+            <param>/users/[^/]+/dataset/[^/]+/version</param>
+        </event>
+        <bindings>
+            <binding name="name" type="pathNode">
+                <param>4</param>
+            </binding>
+        </bindings>
         <actions>
             <action type="deleteNode">
-                <param>/my/action/$label</param>
+                <param>/stanbol/instances/sites/{name}_kiwi_yard</param>
             </action>
         </actions>
     </rule>
