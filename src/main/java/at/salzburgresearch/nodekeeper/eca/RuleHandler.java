@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ...
@@ -41,31 +42,23 @@ public class RuleHandler {
     }
 
     public void readRules(InputStream stream) throws NodeKeeperException, IOException, InterruptedException {
-        List<Rule> rules = InputOutputHandler.parseRules(stream);
-        for(Rule rule : rules) {
+        //remove old rules
+        List<Rule> rs = InputOutputHandler.parseRules(stream);
+        Set<String> keys = rules.keySet();
+        for(String ruleid : keys) {
+            removeRule(rules.get(ruleid));
+        }
+        for(Rule rule : rs) {
             addRule(rule);
         }
     }
 
     public void writeRules(OutputStream stream) throws ParserConfigurationException, TransformerException, IOException {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.newDocument();
-
-        Element rootElement = doc.createElement("rules");
-        doc.appendChild(rootElement);
-
+        List<Rule> r = new ArrayList<Rule>();
         for(String ruleid : rules.keySet()) {
-            rootElement.appendChild(rules.get(ruleid).toElement(doc));
+            r.add(rules.get(ruleid));
         }
-
-        DOMSource domSource = new DOMSource(doc);
-        StreamResult result = new StreamResult(stream);
-
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.transform(domSource, result);
-        stream.flush();
+        InputOutputHandler.serializeRules(r,stream);
     }
 
     public void addRule(Rule rule) throws NodeKeeperException, IOException, InterruptedException {
@@ -294,8 +287,25 @@ public class RuleHandler {
             return f;
         }
 
-        public static void serializeRules(List<Rule> rules, OutputStream inputStream) {
-            //TODO
+        public static void serializeRules(List<Rule> rules, OutputStream stream) throws ParserConfigurationException, TransformerException, IOException  {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+
+            Element rootElement = doc.createElement("rules");
+            doc.appendChild(rootElement);
+
+            for(Rule rule : rules) {
+                rootElement.appendChild(rule.toElement(doc));
+            }
+
+            DOMSource domSource = new DOMSource(doc);
+            StreamResult result = new StreamResult(stream);
+
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+            stream.flush();
         }
 
     }
