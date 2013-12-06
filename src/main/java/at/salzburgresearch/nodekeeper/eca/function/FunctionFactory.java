@@ -19,6 +19,8 @@ public class FunctionFactory {
         put("nodeData",NodeData.class);
         put("pathNode",PathNode.class);
         put("searchReplace",SearchReplace.class);
+        put("concat",Concat.class);
+        put("parentNode",Parent.class);
     }};
 
     public static Function createFunction(String clazzname, Object... args) {
