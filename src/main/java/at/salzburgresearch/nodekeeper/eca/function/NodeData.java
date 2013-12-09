@@ -17,7 +17,7 @@ public class NodeData extends Function {
         try {
             Class clazz = params.length == 2 ? Class.forName((String)((Function)params[0]).execute(nodeKeeper,current)) : String.class;
             Node node = nodeKeeper.readNode((String)((Function)params[0]).execute(nodeKeeper,current),clazz);
-            return node.getData();
+            return node == null ? null : node.getData();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
