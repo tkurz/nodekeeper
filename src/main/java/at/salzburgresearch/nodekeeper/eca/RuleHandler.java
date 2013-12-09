@@ -67,6 +67,14 @@ public class RuleHandler {
         rules.put(rule.id,rule);
     }
 
+    public Rule getRule(String id) {
+        return rules.get(id);
+    }
+
+    public Set<String> getRuleIds() {
+        return rules.keySet();
+    }
+
     public void removeRule(Rule rule) {
         deactivateRule(rule);
         rules.remove(rule.id);
@@ -190,7 +198,7 @@ public class RuleHandler {
                                 rule.event = new Event(type,eventElement.getElementsByTagName("param").item(0).getTextContent().trim());
                             }
                         }
-                        if(rule.event == null) throw new IOException(String.format("Rule #$s must contain an event element",i));
+                        if(rule.event == null) throw new IOException(String.format("Rule #%s must contain an event element",i));
 
                         if(bindings.getLength()>0) {
                             NodeList bindingList = bindings.item(0).getChildNodes();
