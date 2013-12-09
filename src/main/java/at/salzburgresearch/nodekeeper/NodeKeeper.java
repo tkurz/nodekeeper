@@ -19,6 +19,7 @@ import java.lang.Override;
 import java.lang.String;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * NodeKeeper is a ZooKeeper API wrapper, that makes it more comfortable to work with ZooKeeper nodes. The main methods are:
@@ -87,7 +88,11 @@ public class NodeKeeper implements Watcher {
                 }
             }
         });
-        connectedSignal.await();
+        try {
+            connectedSignal.await(sessionTimeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new NodeKeeperException("cannot connect to zookeeper host "+connectionString);
+        }
 
         log.info(" - nodekeeper initialized");
     }
