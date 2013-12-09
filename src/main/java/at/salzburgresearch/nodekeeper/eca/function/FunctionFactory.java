@@ -21,6 +21,7 @@ public class FunctionFactory {
         put("searchReplace",SearchReplace.class);
         put("concat",Concat.class);
         put("parentNode",Parent.class);
+        put("or",OrFunction.class);
     }};
 
     public static Function createFunction(String clazzname, Object... args) {
