@@ -10,8 +10,7 @@ import java.util.HashMap;
  */
 public class FunctionFactory {
 
-    //TODO: should be done with service loader
-    private static HashMap<String,Class> functions = new HashMap<String, Class>(){{
+    public static HashMap<String,Class> functions = new HashMap<String, Class>(){{
         put("currentNodeData",CurrentNodeData.class);
         put("currentNodeLabel",CurrentNodeLabel.class);
         put("staticValue",StaticValueFunction.class);
