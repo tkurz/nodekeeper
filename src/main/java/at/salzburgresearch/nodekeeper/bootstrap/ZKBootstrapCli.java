@@ -84,8 +84,8 @@ public class ZKBootstrapCli {
 
     private void displayUsage() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp( "java -jar nodekeeper-java.jar " + this.getClass().getCanonicalName(), buildOptions() );
-        System.exit(0);
+        formatter.printHelp( "java -jar nodekeeper-java-1.1-onejar.jar", buildOptions() );
+        System.exit(-1);
     }
 
 }
