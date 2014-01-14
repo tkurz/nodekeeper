@@ -24,8 +24,9 @@ public class ZKBootstrapCli {
 
     public ZKBootstrapCli(String[] args) throws ParseException {
         CommandLineParser parser = new PosixParser();
+        CommandLine line = null;
         try {
-            CommandLine line = parser.parse(buildOptions(), args);
+            line = parser.parse(buildOptions(), args);
         } catch (MissingOptionException e) {
             System.err.println(e.getMessage());
             displayUsage();
