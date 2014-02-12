@@ -3,6 +3,8 @@
 NodeKeeper is a simple to use library on the top of ZooKeeper. It allows to create, read, update and delete zk-nodes,
 supports custom datatypes and allows to listen and react on node events (create, update, delete) based on path patterns.
 
+**NEW FEATURE:** NodeKeeper now supports Event-Binding-Action rules. [Check it out!](#eca)
+
 ##The NodeKeeper Instance
 The NodeKeeper instance must be initialized using the constructor:
 
@@ -77,6 +79,8 @@ listener methods are called immediately.
 
 #A simple example
 
+```java
+
     Properties properties = new Properties();
     String basicPath = "/basic/path"
 
@@ -95,6 +99,85 @@ listener methods are called immediately.
 
     //read string node
     Node<String> node = nodeKeeper.readNode(nodePath1,String.class);
+``
+
+# <a name="eca"></a> Event-Binding-Action rules
+
+NodeKeeper supports Event-Binding-Action rules since version 1.1. This means:
+
+ - *Event:* A node is created, updated or deleted. The node itself can be specified via a regex pattern
+ - *Binding:* Bind values like node paths, node labels, node data, etc. to variable names. A lot of useful functions supports you in this step.
+ - *Action:* Create, update or delete nodes by using and combining variables that are defined on step 2
+
+NodeKeeper of course supports several rules in parallel.
+
+## The rule syntax
+
+Here you can see a sample rule that is described inline with comments
+
+```xml
+
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <rules>
+
+        <!-- A single rule that can be identified with its unique name -->
+        <rule name="test_rule">
+
+            <!-- if a node with the given pattern is created -->
+            <event type="nodeCreated">
+                <param>/my/event/.+</param>
+            </event>
+
+            <!-- bind this variables -->
+            <bindings>
+
+                <!-- 'data' is the data of the current node -->
+                <binding name="data" type="currentNodeData"/>
+
+                <!-- 'label' is the label of the current node in upper case -->
+                <binding name="label" type="toUpperCase">
+                    <param type="currentNodeLabel"/>
+                </binding>
+
+            </bindings>
+
+            <!-- and do this actions -->
+            <actions>
+
+                <!-- create or update a node with the given path and data. The data in '{}' is replaced with the bound variables -->
+                <action type="createUpdateNode">
+                    <param>/my/action/{label}</param>
+                    <param>Hello {data}</param>
+                </action>
+
+            </actions>
+        </rule>
+    </rules>
+
+```
+
+## Binding functions
+
+All supported binding functions are at the moment in the package *at.salzburgresearch.nodekeeper.eca.function*. In the next version
+the functions should be bound by ClassLoader, so that they are easily extendable.
+
+## Example
+
+This is a simple code example how you can load rules. Of course rules can also be created pragmatically. For more information
+have a look at the [Testcases.](src/test/java/at/salzburgresearch/nodekeeper/tests/ruleEngineTests/SimpleRuleTests.java)
+
+```java
+
+    InputStream in = new FileInputStream("rules.xml");
+
+    RuleHandler handler = new RuleHandler(nodeKeeper);
+    handler.readRules(in);
+
+    nodeKeeper.writeNode(new Node<String>("/my/event/node","World"),String.class);
+
+    //with the rule described above, a new node '/my/action/NODE' with value 'Hello World' is created
+
+```
 
 #Contact
 Thomas Kurz, Salzburg Research Forschungsgesellschaft, Salzburg, Austria
