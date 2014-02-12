@@ -3,7 +3,7 @@
 NodeKeeper is a simple to use library on the top of ZooKeeper. It allows to create, read, update and delete zk-nodes,
 supports custom datatypes and allows to listen and react on node events (create, update, delete) based on path patterns.
 
-**NEW FEATURE:** NodeKeeper now supports Event-Binding-Action rules. [Check it out!](#eca)
+**NEW FEATURE:** NodeKeeper now supports Event-Binding-Action rules. [Check it out!](#a-simple-example)
 
 ##The NodeKeeper Instance
 The NodeKeeper instance must be initialized using the constructor:
@@ -17,38 +17,48 @@ The NodeKeeper instance must be initialized using the constructor:
 
 As soon as NodeKeeper is instantiated, it is already connected to ZooKeeper. To shutdown the connection use
 
-    public void shutdown()
+```java
+public void shutdown()
+```
 
 ##Nodes and DataHandlers
 NodeKeeper nodes are implemented using Generics. In combination with specific DataHandlers, NodeKeeper allows to handle node
 data in various formats. The nodes support only 3 fields with getters and setters:
 
-    Node<T> {
-        String path;
-        T data;
-        int version;
-    }
+```java
+Node<T> {
+    String path;
+    T data;
+    int version;
+}
+```
 
 To support T as DataFormat a specific DataHandler must be implemented using the DataHandler interface:
 
-    public interface DataHandler<T> {
-        public T parse(byte[] data) throws IOException;
-        public byte[] serialize(T data) throws IOException;
-        public Class<T> getType();
-    }
+```java
+public interface DataHandler<T> {
+    public T parse(byte[] data) throws IOException;
+    public byte[] serialize(T data) throws IOException;
+    public Class<T> getType();
+}
+```
 
 The DataHandler<?> must be added to the NodeKeeper object using:
 
-    public void addDataHandler(DataHandler dataHandler)
+```java
+public void addDataHandler(DataHandler dataHandler)
+```
 
 ##Read and Write
 
 NodeKeeper supports the following node operations:
 
-    public <T> Node<T> readNode(String path, Class<T> clazz);
-    public <T> void writeNode(Node<T> node, Class<T> clazz);
-    public <T> void deleteNode(Node<T> node);
-    public <T> Set<Node<T>> listChildrenNodes(String path, Class<T> clazz);
+```java
+public <T> Node<T> readNode(String path, Class<T> clazz);
+public <T> void writeNode(Node<T> node, Class<T> clazz);
+public <T> void deleteNode(Node<T> node);
+public <T> Set<Node<T>> listChildrenNodes(String path, Class<T> clazz);
+```
 
 * **readNode** returns a Node<T> object; null if the node does not exist
 * **writeNode** creates or updates the node; the path is created recursively
@@ -60,19 +70,25 @@ NodeKeeper supports the following node operations:
 NodeKeeper allows to add listeners to pathPatterns, so you can handle CRUD events on that nodes. The listener must extend
 the abstract class NodeListener:
 
-    public abstract void onNodeCreated(Node<T> node) throws InterruptedException, NodeKeeperException;
-    public abstract void onNodeUpdated(Node<T> node) throws InterruptedException, NodeKeeperException;
-    public abstract void onNodeDeleted(Node<T> node) throws InterruptedException, NodeKeeperException;
+```java
+public abstract void onNodeCreated(Node<T> node) throws InterruptedException, NodeKeeperException;
+public abstract void onNodeUpdated(Node<T> node) throws InterruptedException, NodeKeeperException;
+public abstract void onNodeDeleted(Node<T> node) throws InterruptedException, NodeKeeperException;
 
-    public abstract Class<T> getType();
+public abstract Class<T> getType();
+```
 
 To append a listener to NodeKeeper, you have to use:
 
-    addListener(String pathPattern, NodeListener listener)
+```java
+addListener(String pathPattern, NodeListener listener)
+```
 
 To enable all appended listeners, the process must be started using
 
-    startListeners()
+```java
+startListeners()
+```
 
 After that all nodes that matches at least one pattern are checked, if they changed regarding the properties. If so, the
 listener methods are called immediately.
@@ -80,28 +96,27 @@ listener methods are called immediately.
 #A simple example
 
 ```java
+Properties properties = new Properties();
+String basicPath = "/basic/path"
 
-    Properties properties = new Properties();
-    String basicPath = "/basic/path"
+//create instance
+NodeKeeper nodeKeeper = new NodeKeeper("127.0.0.1:8121",5000,basicPath);
 
-    //create instance
-    NodeKeeper nodeKeeper = new NodeKeeper("127.0.0.1:8121",5000,basicPath);
+//add custom listener
+nodeKeeper.addListener(/basic/path/nodes/.+,new MyNodeListener());
+nodeKeeper.startListeners();
 
-    //add custom listener
-    nodeKeeper.addListener(/basic/path/nodes/.+,new MyNodeListener());
-    nodeKeeper.startListeners();
+String nodePath1 = basicPath+"/nodes/node1";
+String data = "data";
 
-    String nodePath1 = basicPath+"/nodes/node1";
-    String data = "data";
+//write string node
+nodeKeeper.writeNode(new Node<String>(nodePath1,data),String.class);
 
-    //write string node
-    nodeKeeper.writeNode(new Node<String>(nodePath1,data),String.class);
+//read string node
+Node<String> node = nodeKeeper.readNode(nodePath1,String.class);
+```
 
-    //read string node
-    Node<String> node = nodeKeeper.readNode(nodePath1,String.class);
-``
-
-# <a name="eca"></a> Event-Binding-Action rules
+# Event-Binding-Action rules
 
 NodeKeeper supports Event-Binding-Action rules since version 1.1. This means:
 
@@ -116,44 +131,42 @@ NodeKeeper of course supports several rules in parallel.
 Here you can see a sample rule that is described inline with comments
 
 ```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rules>
 
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <rules>
+    <!-- A single rule that can be identified with its unique name -->
+    <rule name="test_rule">
 
-        <!-- A single rule that can be identified with its unique name -->
-        <rule name="test_rule">
+        <!-- if a node with the given pattern is created -->
+        <event type="nodeCreated">
+            <param>/my/event/.+</param>
+        </event>
 
-            <!-- if a node with the given pattern is created -->
-            <event type="nodeCreated">
-                <param>/my/event/.+</param>
-            </event>
+        <!-- bind this variables -->
+        <bindings>
 
-            <!-- bind this variables -->
-            <bindings>
+            <!-- 'data' is the data of the current node -->
+            <binding name="data" type="currentNodeData"/>
 
-                <!-- 'data' is the data of the current node -->
-                <binding name="data" type="currentNodeData"/>
+            <!-- 'label' is the label of the current node in upper case -->
+            <binding name="label" type="toUpperCase">
+                <param type="currentNodeLabel"/>
+            </binding>
 
-                <!-- 'label' is the label of the current node in upper case -->
-                <binding name="label" type="toUpperCase">
-                    <param type="currentNodeLabel"/>
-                </binding>
+        </bindings>
 
-            </bindings>
+        <!-- and do this actions -->
+        <actions>
 
-            <!-- and do this actions -->
-            <actions>
+            <!-- create or update a node with the given path and data. The data in '{}' is replaced with the bound variables -->
+            <action type="createUpdateNode">
+                <param>/my/action/{label}</param>
+                <param>Hello {data}</param>
+            </action>
 
-                <!-- create or update a node with the given path and data. The data in '{}' is replaced with the bound variables -->
-                <action type="createUpdateNode">
-                    <param>/my/action/{label}</param>
-                    <param>Hello {data}</param>
-                </action>
-
-            </actions>
-        </rule>
-    </rules>
-
+        </actions>
+    </rule>
+</rules>
 ```
 
 ## Binding functions
@@ -167,15 +180,14 @@ This is a simple code example how you can load rules. Of course rules can also b
 have a look at the [Testcases.](src/test/java/at/salzburgresearch/nodekeeper/tests/ruleEngineTests/SimpleRuleTests.java)
 
 ```java
+InputStream in = new FileInputStream("rules.xml");
 
-    InputStream in = new FileInputStream("rules.xml");
+RuleHandler handler = new RuleHandler(nodeKeeper);
+handler.readRules(in);
 
-    RuleHandler handler = new RuleHandler(nodeKeeper);
-    handler.readRules(in);
+nodeKeeper.writeNode(new Node<String>("/my/event/node","World"),String.class);
 
-    nodeKeeper.writeNode(new Node<String>("/my/event/node","World"),String.class);
-
-    //with the rule described above, a new node '/my/action/NODE' with value 'Hello World' is created
+//with the rule described above, a new node '/my/action/NODE' with value 'Hello World' is created
 
 ```
 
