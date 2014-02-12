@@ -3,7 +3,7 @@
 NodeKeeper is a simple to use library on the top of ZooKeeper. It allows to create, read, update and delete zk-nodes,
 supports custom datatypes and allows to listen and react on node events (create, update, delete) based on path patterns.
 
-**NEW FEATURE:** NodeKeeper now supports Event-Binding-Action rules. [Check it out!](#a-simple-example)
+**NEW FEATURE:** NodeKeeper now supports Event-Binding-Action rules. [Check it out!](#event-binding-action-rules)
 
 ##The NodeKeeper Instance
 The NodeKeeper instance must be initialized using the constructor:
@@ -81,13 +81,13 @@ public abstract Class<T> getType();
 To append a listener to NodeKeeper, you have to use:
 
 ```java
-addListener(String pathPattern, NodeListener listener)
+addListener(String pathPattern, NodeListener listener);
 ```
 
 To enable all appended listeners, the process must be started using
 
 ```java
-startListeners()
+startListeners();
 ```
 
 After that all nodes that matches at least one pattern are checked, if they changed regarding the properties. If so, the
