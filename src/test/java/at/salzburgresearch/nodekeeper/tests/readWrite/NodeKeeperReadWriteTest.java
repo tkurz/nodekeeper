@@ -49,16 +49,16 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
     public void readChildrenNodesTest() throws NodeKeeperException, InterruptedException, IOException {
 
         int data1 = 1;
-        String path1 = "/node1";
+        String path1 = "/node/node1";
         int data2 = 2;
-        String path2 = "/node2";
+        String path2 = "/node/node2";
 
         nodeKeeper.writeNode(new Node<Integer>(path1,data1),Integer.class);
         nodeKeeper.writeNode(new Node<Integer>(path2,data2),Integer.class);
 
         HashMap<String,Integer> map = new HashMap<String,Integer>();
 
-        for(Node<Integer> node : nodeKeeper.listChildrenNodes("/",Integer.class)) {
+        for(Node<Integer> node : nodeKeeper.listChildrenNodes("/node",Integer.class)) {
             map.put(node.getPath(),node.getData());
         }
 
@@ -141,7 +141,6 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
     }
 
     @Test
-    @Ignore
     public void wrongClassCast() throws NodeKeeperException, InterruptedException, IOException {
         String data = "Test";
         String path = "/node";

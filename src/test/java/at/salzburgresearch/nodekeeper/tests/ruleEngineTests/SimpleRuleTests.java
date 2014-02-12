@@ -98,7 +98,7 @@ public class SimpleRuleTests extends NodeKeeperTest {
         nodeKeeper.writeNode(new Node<String>("/my/event/node","Update"),String.class);
         Thread.sleep(2000);
 
-        Assert.assertNull(nodeKeeper.readNode("/my/action/NODE",String.class));
+        Assert.assertNotNull(nodeKeeper.readNode("/my/action/NODE",String.class));
 
     }
 

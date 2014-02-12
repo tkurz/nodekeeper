@@ -12,6 +12,7 @@ import org.junit.Before;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * ...
@@ -21,7 +22,7 @@ import java.util.Properties;
 public abstract class NodeKeeperTest {
 
     private static final String CONNECTION_STRING = "127.0.0.1";
-    public static final int TIMEOUT = 60000;
+    public static final int TIMEOUT = 6000;
 
     public ZooKeeperServer server;
     public ServerCnxnFactory standaloneServerFactory;
@@ -58,7 +59,7 @@ public abstract class NodeKeeperTest {
     }
 
     private int startZookeeper() throws IOException, InterruptedException {
-        File dir = new File(fileDirectory);
+        File dir = new File(fileDirectory+"_"+ UUID.randomUUID().toString());
         int tickTime = 2000;
         int numConnections = 5000;
 
@@ -80,7 +81,13 @@ public abstract class NodeKeeperTest {
         System.out.println("Zookeeper and Nodekeeper are down");
 
         //delete tmp file
-        FileUtils.deleteDirectory(new File(System.getProperty("java.io.tmpdir")+"zookeeper"));
+        File folder = new File(System.getProperty("java.io.tmpdir"));
+        String[] allFilesInThatFolder = folder.list();
+        for(String filename : allFilesInThatFolder) {
+            if(filename.matches(System.getProperty("java.io.tmpdir")+"zookeeper.*")) {
+                FileUtils.deleteDirectory(new File(filename));
+            }
+        }
 
         System.out.println("data directory is deleted");
     }

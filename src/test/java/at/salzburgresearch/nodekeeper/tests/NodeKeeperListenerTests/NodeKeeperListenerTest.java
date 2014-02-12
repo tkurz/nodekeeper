@@ -84,35 +84,7 @@ public class NodeKeeperListenerTest extends NodeKeeperTest {
 
     }
 
-    @Test
-    @Ignore //TODO how can it be handled?
-    public void testConnectionLost() throws NodeKeeperException, IOException, InterruptedException {
-        String path = "/my/test/node";
-        nodeKeeper.addListener(path,new TestNodeListener(0));
-        nodeKeeper.startListeners();
-
-        nodeKeeper.writeNode(new Node(path,"one"),String.class);
-        Thread.sleep(10);
-        assertEquals(data[0], "one");
-
-        standaloneServerFactory.shutdown();
-        assertFalse(server.isRunning());
-        Thread.sleep(10);
-        standaloneServerFactory.startup(server);
-        assertTrue(server.isRunning());
-        Thread.sleep(10);
-
-        try {
-            nodeKeeper.writeNode(new Node(path,"two"),String.class);
-            fail("should throw an exception");
-        } catch(Exception e) {
-
-        }
-        Thread.sleep(10);
-        nodeKeeper.writeNode(new Node(path,"two"),String.class);
-        assertEquals(data[0], "two");
-
-    }
+    //TODO how to test connection lost?
 
     @Test
     public void testListeningToFullPatternString() throws NodeKeeperException, IOException, InterruptedException {
