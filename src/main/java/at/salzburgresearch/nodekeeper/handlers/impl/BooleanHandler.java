@@ -12,7 +12,9 @@ import java.io.IOException;
 public class BooleanHandler implements DataHandler<Boolean> {
     @Override
     public Boolean parse(byte[] data) throws IOException {
-        return new String(data).equalsIgnoreCase("true") ? true : false;
+        if(new String(data).equalsIgnoreCase("true")) return true;
+        if(new String(data).equalsIgnoreCase("false")) return false;
+        throw new IOException("cannot parse to boolean");
     }
 
     @Override
