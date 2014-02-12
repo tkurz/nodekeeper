@@ -17,8 +17,8 @@
         <!-- <condition></condition> -->
         <actions>
             <action type="createUpdateNode">
-                <param>/my/action/$label</param>
-                <param>Hello $data: $stat</param>
+                <param>/my/action/{label}</param>
+                <param>Hello {data}: {stat}</param>
             </action>
         </actions>
     </rule>
