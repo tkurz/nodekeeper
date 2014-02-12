@@ -77,6 +77,10 @@ public class NodeKeeper implements Watcher {
         this.addDataHandler(new IntegerHandler());
         this.addDataHandler(new BooleanHandler());
 
+        init(false);
+    }
+
+    private void init(boolean reconnect) throws IOException, NodeKeeperException, InterruptedException {
         final CountDownLatch connectedSignal = new CountDownLatch(1);
         zk = new ZooKeeper(connectionString, sessionTimeout, new Watcher() {
             @Override
@@ -85,16 +89,34 @@ public class NodeKeeper implements Watcher {
                     case SyncConnected:
                         connectedSignal.countDown();
                         break;
+                    case Disconnected:
+                        log.info("nodekeeper gets disconnected, try to reconnect");
+                        try {
+                            zk.close();
+                            init(true);
+                        } catch (IOException e1) {
+                            log.error("cannot reconnect to zookeeper");
+                        } catch (NodeKeeperException e1) {
+                            log.error("cannot reconnect to zookeeper");
+                        } catch (InterruptedException e1) {
+                            Thread.currentThread().interrupt();
+                            log.error("cannot reconnect to zookeeper");
+                        }
+                        break;
                 }
             }
         });
+
         try {
             connectedSignal.await(sessionTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new NodeKeeperException("cannot connect to zookeeper host "+connectionString);
         }
 
         log.info(" - nodekeeper initialized");
+
+        if(reconnect) startListeners();
     }
 
     public void startListeners() throws InterruptedException, NodeKeeperException, IOException {
@@ -147,6 +169,7 @@ public class NodeKeeper implements Watcher {
     @Override
     public void process(WatchedEvent watchedEvent) {
         try {
+
             if (watchedEvent.getType() == Event.EventType.NodeChildrenChanged) {
                 //a child has been added
                 final List<String> children = new ArrayList<String>(zk.getChildren(watchedEvent.getPath(), this));
@@ -168,7 +191,7 @@ public class NodeKeeper implements Watcher {
             //e.printStackTrace();
         } catch (IOException e) {
             //e.printStackTrace();
-        } //TODO how to handle exceptions here?
+        }
     }
 
     /**
