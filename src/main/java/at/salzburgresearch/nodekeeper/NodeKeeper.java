@@ -90,6 +90,7 @@ public class NodeKeeper implements Watcher {
                         connectedSignal.countDown();
                         break;
                     case Disconnected:
+                    case Expired:
                         log.info("nodekeeper gets disconnected, try to reconnect");
                         try {
                             zk.close();
