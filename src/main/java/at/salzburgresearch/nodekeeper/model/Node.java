@@ -43,4 +43,8 @@ public class Node<T> {
         return "["+getPath()+" ("+getVersion()+") "+getData().toString()+"]";
     }
 
+    public String stringify() {
+        return getPath() + " = " + getData().toString();
+    }
+
 }

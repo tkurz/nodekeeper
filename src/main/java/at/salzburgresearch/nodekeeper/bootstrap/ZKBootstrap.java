@@ -5,7 +5,9 @@ import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
 
 import java.io.*;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * ...
@@ -36,6 +38,22 @@ public class ZKBootstrap {
             nodeKeeper.writeNode(node,String.class);
         }
 
+    }
+
+    public void write(OutputStream os) throws NodeKeeperException, InterruptedException, IOException {
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os));
+        stringifyChildren(out,"/");
+        out.flush();
+        out.close();
+    }
+
+    private void stringifyChildren( BufferedWriter out, String path ) throws NodeKeeperException, InterruptedException, IOException {
+        Set<Node<String>> nodes = nodeKeeper.listChildrenNodes(path,String.class);
+        for(Node<String> node : nodes) {
+            out.write(node.stringify());
+            out.newLine();
+            stringifyChildren(out, node.getPath());
+        }
     }
 
     /**

@@ -6,7 +6,9 @@ import at.salzburgresearch.nodekeeper.model.Node;
 import at.salzburgresearch.nodekeeper.tests.NodeKeeperTest;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -31,7 +33,13 @@ public class BootstrapTest extends NodeKeeperTest {
         Node<String> node3 = nodeKeeper.readNode("/other/node",String.class);
         Node<String> node4 = nodeKeeper.readNode("/stanbol/test",String.class);
 
-        System.out.print(node4.getData());
+        //TODO test
+
+        File file2 = new File("/tmp/123.txt");
+        FileOutputStream out = new FileOutputStream(file2);
+        bootstrap.write(out);
+        out.flush();
+        out.close();
     }
 
 }
