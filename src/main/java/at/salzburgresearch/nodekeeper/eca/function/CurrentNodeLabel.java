@@ -19,4 +19,9 @@ public class CurrentNodeLabel extends Function {
     public String getName() {
         return "currentNodeLabel";
     }
+
+    @Override
+    public String getDescription() {
+        return "the label of the node that triggered the rule execution";
+    }
 }

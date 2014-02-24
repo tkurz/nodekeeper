@@ -317,4 +317,12 @@ public class RuleHandler {
         }
 
     }
+
+    public String getDescription() {
+        StringBuilder b = new StringBuilder();
+        for(String id: rules.keySet()) {
+            b.append(rules.get(id).getDescription());
+        }
+        return b.toString();
+    }
 }

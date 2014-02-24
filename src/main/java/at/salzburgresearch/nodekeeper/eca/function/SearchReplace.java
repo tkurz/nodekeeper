@@ -28,4 +28,16 @@ public class SearchReplace extends Function {
     public String getName() {
         return "searchReplace";
     }
+
+    @Override
+    public String getDescription() {
+        StringBuilder b = new StringBuilder();
+        b.append(((Function)params[0]).getDescription() +", whereby the data is substituted as follows:<ul>");
+        for(int i = 1; i < params.length; i++) {
+            b.append("<li>{"+i+"} is " + ((Function)params[i]).getDescription());
+            b.append("</li>");
+        }
+        b.append("</ul>");
+        return b.toString();
+    }
 }

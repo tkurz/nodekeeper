@@ -23,8 +23,8 @@ public class Action {
         createUpdateNode,deleteNode
     }
 
-    private Type type;
-    private String[] args;
+    public Type type;
+    public String[] args;
 
     public Action(Type type, String... args) {
         this.type = type;

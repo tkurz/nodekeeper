@@ -35,4 +35,9 @@ public class NodeData extends Function {
     public String getName() {
         return "nodeData";
     }
+
+    @Override
+    public String getDescription() {
+        return "the data of the node having the path " + ((Function)params[0]).getDescription() ;
+    }
 }

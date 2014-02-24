@@ -21,4 +21,9 @@ public class PathNode extends Function {
     public String getName() {
         return "pathNode";
     }
+
+    @Override
+    public String getDescription() {
+        return "the label of the node with path-length " + ((Function)params[0]).getDescription() + " of the current path";
+    }
 }

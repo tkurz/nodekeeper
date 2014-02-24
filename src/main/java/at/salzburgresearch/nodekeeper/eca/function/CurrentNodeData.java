@@ -19,4 +19,9 @@ public class CurrentNodeData extends Function {
     public String getName() {
         return "currentNodeData";
     }
+
+    @Override
+    public String getDescription() {
+        return "the data of the node that triggered the rule execution";
+    }
 }

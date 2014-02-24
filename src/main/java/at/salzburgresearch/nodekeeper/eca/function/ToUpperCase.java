@@ -19,4 +19,11 @@ public class ToUpperCase extends Function {
     public String getName() {
         return "toUpperCase";
     }
+
+    @Override
+    public String getDescription() {
+        return "the UpperCase of "+((Function)params[0]).getDescription();
+    }
+
+
 }

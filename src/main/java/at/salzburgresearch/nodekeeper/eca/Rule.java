@@ -4,9 +4,7 @@ import at.salzburgresearch.nodekeeper.NodeListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.annotation.Documented;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,6 +64,42 @@ public class Rule {
         rule.appendChild(as);
 
         return rule;
+    }
+
+    public String getDescription() {
+        StringBuilder b = new StringBuilder();
+        b.append("<b>Rule '" + id + "' says</b></br>");
+        b.append("If a node is ");
+        switch(event.type) {
+            case nodeCreated: b.append("created");break;
+            case nodeUpdated: b.append("updated");break;
+            case nodeDeleted: b.append("deleted");break;
+            case nodeCreatedUpdated: b.append("created or updated");break;
+        }
+        b.append(" that follows the pattern <b>");
+        b.append(event.pattern);
+        b.append("</b>, then:<ul>");
+        for(Action action : actions) {
+            b.append("<li>");
+            switch(action.type) {
+                case createUpdateNode: b.append("<b>create or update</b>");break;
+                case deleteNode: b.append("<b>delete</b>");break;
+            }
+            b.append(" node <b>");
+            b.append(action.args[0]);
+            b.append("</b>");
+            if(action.args.length > 1) b.append(" with data <b>" + action.args[1]);
+            b.append("</b></li>");
+        }
+
+        b.append("</ul>whereby the variables are defined as follows:<ul>");
+        for(Binding binding : bindings) {
+            b.append("<li>");
+            b.append(binding.getDescription());
+            b.append("</li>");
+        }
+        b.append("</ul>");
+        return b.toString();
     }
 
 }

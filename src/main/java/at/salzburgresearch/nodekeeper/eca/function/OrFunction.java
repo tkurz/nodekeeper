@@ -23,4 +23,14 @@ public class OrFunction extends Function {
     public String getName() {
         return "or";
     }
+
+    @Override
+    public String getDescription() {
+        StringBuilder b = new StringBuilder();
+        for(int i = 0; i < params.length; i++) {
+            b.append(((Function)params[i]).getDescription());
+            if(i!=params.length-1) b.append("<br>OR ");
+        }
+        return b.toString();
+    }
 }

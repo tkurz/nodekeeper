@@ -21,6 +21,11 @@ public class StaticValueFunction extends Function {
         return "staticValue";
     }
 
+    @Override
+    public String getDescription() {
+        return "'"+(String)params[0]+"'";
+    }
+
     public Element toElement(Document doc) {
         Element element = doc.createElement("param");
         element.setTextContent((String)params[0]);

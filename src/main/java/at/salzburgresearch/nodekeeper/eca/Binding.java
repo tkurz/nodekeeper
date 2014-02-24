@@ -42,4 +42,8 @@ public class Binding {
         return element;
     }
 
+    public String getDescription() {
+        return "<b>{"+name+"}</b> is " + function.getDescription();
+    }
+
 }

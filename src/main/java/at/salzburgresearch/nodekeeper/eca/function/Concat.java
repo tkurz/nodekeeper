@@ -22,4 +22,17 @@ public class Concat extends Function {
     public String getName() {
         return "concat";
     }
+
+    @Override
+    public String getDescription() {
+        StringBuilder b = new StringBuilder();
+        for(int i = 0; i < params.length; i++) {
+            b.append("<li>");
+            if(i!=0) b.append("AND ");
+            b.append(((Function)params[i]).getDescription());
+            b.append("</li>");
+
+        }
+        return "the concatenation of<ul>" + b.toString() + "</ul>";
+    }
 }

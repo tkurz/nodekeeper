@@ -20,6 +20,8 @@ public abstract class Function {
     public abstract Object execute(NodeKeeper nodeKeeper, Node current);
     public abstract String getName();
 
+    public abstract String getDescription();
+
     public Element toElement(Document doc) {
         Element element = doc.createElement("param");
         element.setAttribute("type",getName());

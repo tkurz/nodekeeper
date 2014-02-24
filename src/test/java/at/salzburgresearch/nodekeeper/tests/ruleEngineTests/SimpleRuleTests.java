@@ -54,6 +54,7 @@ public class SimpleRuleTests extends NodeKeeperTest {
         ruleHandler.writeRules(baos);
 
         System.out.println(baos.toString());
+
     }
 
     @Test
@@ -99,6 +100,8 @@ public class SimpleRuleTests extends NodeKeeperTest {
         Thread.sleep(2000);
 
         Assert.assertNotNull(nodeKeeper.readNode("/my/action/NODE",String.class));
+
+        System.out.println(handler.getDescription());
 
     }
 

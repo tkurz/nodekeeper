@@ -19,4 +19,10 @@ public class Parent extends Function {
     public String getName() {
         return "parentNode";
     }
+
+    @Override
+    public String getDescription() {
+        return "the parent of the node that triggered the rule execution";
+    }
+
 }
