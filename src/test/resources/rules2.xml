@@ -16,7 +16,14 @@
                     <param>4</param>
                 </param>
             </binding>
+            <binding name="stat">Test</binding>
         </bindings>
+        <conditions>
+            <condition type="equals">
+                <param>{stat}</param>
+                <param>Test</param>
+            </condition>
+        </conditions>
         <actions>
             <action type="createUpdateNode">
                 <param>/stanbol/instances/sites/{name}_kiwi_yard</param>

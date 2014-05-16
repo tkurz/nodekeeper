@@ -98,6 +98,12 @@ public class Rule {
             b.append(binding.getDescription());
             b.append("</li>");
         }
+        if(conditions.size() != 0) b.append("</ul>and following conditions are fulfilled:<ul>");
+        for(Condition condition : conditions) {
+            b.append("<li>");
+            b.append(condition.getDescription());
+            b.append("</li>");
+        }
         b.append("</ul>");
         return b.toString();
     }

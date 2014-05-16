@@ -103,11 +103,10 @@ public class RuleHandler {
             }
 
             private boolean checkConditions(HashMap<String,String> bindings) {
-                boolean result = true;
                 for(Condition condition : rule.conditions) {
-                    result = condition.execute(bindings);
+                    if(!condition.execute(bindings)) return false;
                 }
-                return result;
+                return true;
             }
 
             @Override
@@ -180,7 +179,7 @@ public class RuleHandler {
                         //get event
                         NodeList events = ruleElement.getElementsByTagName("event");
                         NodeList bindings = ruleElement.getElementsByTagName("bindings");
-                        NodeList conditions = ruleElement.getElementsByTagName("conditions");//TODO
+                        NodeList conditions = ruleElement.getElementsByTagName("conditions");
                         NodeList actions = ruleElement.getElementsByTagName("actions");
 
                         for(int j = 0; j < events.getLength(); j++) {
@@ -222,7 +221,38 @@ public class RuleHandler {
                             }
                         }
 
-                        //TODO conditions
+                        if (conditions.getLength() > 0) {
+                            NodeList conditionList = conditions.item(0).getChildNodes();
+                            for (int j = 0; j < conditionList.getLength(); j++) {
+                                org.w3c.dom.Node conditionNode = conditionList.item(j);
+                                if (conditionNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                                    Element conditionElement = (Element) conditionNode;
+                                    String typeString = conditionElement.getAttribute("type");
+
+                                    if (typeString == null)
+                                        throw new IOException(String.format("Type of condition #$s in rule #%s must be set", j, i));
+
+                                    Condition.Type type = Condition.Type.valueOf(typeString);
+                                    if (type == null)
+                                        throw new IOException(String.format("Type %s of event #$s in rule #%s is not supported", typeString, j, i));
+
+                                    NodeList paramNodes = conditionElement.getElementsByTagName("param");
+
+                                    if(paramNodes.getLength() != 2) {
+                                        throw new IOException(String.format("Conditions only support two and only two parameters (condition #$s in rule #%s)", j, i));
+                                    }
+
+                                    org.w3c.dom.Node paramNode1 = paramNodes.item(0);
+                                    org.w3c.dom.Node paramNode2 = paramNodes.item(1);
+                                    if (paramNode1.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE && paramNode2.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                                        Element param1 = (Element) paramNode1;
+                                        Element param2 = (Element) paramNode2;
+                                        rule.conditions.add(new Condition(type,param1.getTextContent().trim(),param2.getTextContent().trim()));
+                                    }
+                                }
+                            }
+                        }
+
 
                         if (actions.getLength() > 0) {
                             NodeList actionList = actions.item(0).getChildNodes();

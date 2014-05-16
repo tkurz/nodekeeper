@@ -14,7 +14,12 @@
             </binding>
             <binding name="stat">Test</binding>
         </bindings>
-        <!-- <condition></condition> -->
+        <conditions>
+            <condition type="equals">
+                <param>{stat}</param>
+                <param>Test</param>
+            </condition>
+        </conditions>
         <actions>
             <action type="createUpdateNode">
                 <param>/my/action/{label}</param>
