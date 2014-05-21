@@ -40,6 +40,13 @@ public class ZKBootstrap {
 
     }
 
+    public void write(OutputStream os, String start) throws NodeKeeperException, InterruptedException, IOException {
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os));
+        stringifyChildren(out,start);
+        out.flush();
+        out.close();
+    }
+
     public void write(OutputStream os) throws NodeKeeperException, InterruptedException, IOException {
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os));
         stringifyChildren(out,"/");

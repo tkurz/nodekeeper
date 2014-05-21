@@ -35,11 +35,15 @@ public class BootstrapTest extends NodeKeeperTest {
 
         //TODO test
 
-        File file2 = new File("/tmp/123.txt");
+        File file2 = new File("/tmp/1.txt");
         FileOutputStream out = new FileOutputStream(file2);
         bootstrap.write(out);
-        out.flush();
-        out.close();
+
+        File file3 = new File("/tmp/2.txt");
+        FileOutputStream out2 = new FileOutputStream(file3);
+        bootstrap.write(out2,"/my");
+        out2.flush();
+        out2.close();
     }
 
 }

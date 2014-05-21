@@ -5,6 +5,7 @@ import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import org.apache.commons.cli.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -17,6 +18,11 @@ public class ZKBootstrapCli {
 
     private File file;
     private String connection;
+
+    private Boolean type_is_import = true;
+    private String root = "/";
+
+    private boolean clean = false;
 
     public static void main(String[] args) throws ParseException, InterruptedException, NodeKeeperException, IOException {
         new ZKBootstrapCli(args).exec();
@@ -37,11 +43,29 @@ public class ZKBootstrapCli {
         } else {
             if(line.hasOption("file")) {
                String path = line.getOptionValue("file");
+
+               if(line.hasOption("type"))  {
+                   if(line.getOptionValue("type").equals("export")) {
+                       type_is_import = false;
+                   };
+               }
+
                file = new File(path);
-                if (!file.exists() || !file.canRead()) {
-                    System.err.println("Bootstrap file '" + file.getAbsolutePath() + " not found!");
-                    displayUsage();
+
+                if(type_is_import) {
+                    if(line.hasOption("clean"))  {
+                        clean = Boolean.parseBoolean(line.getOptionValue("clean"));
+                    }
+                    if (!file.exists() || !file.canRead()) {
+                        System.err.println("Bootstrap file '" + file.getAbsolutePath() + " not found!");
+                        displayUsage();
+                    }
+                } else {
+                    if(line.hasOption("root"))  {
+                        root = line.getOptionValue("root");
+                    }
                 }
+
                 if (line.hasOption("connection")) {
                     connection = line.getOptionValue("connection");
                 } else {
@@ -55,10 +79,19 @@ public class ZKBootstrapCli {
     }
 
     public void exec() throws InterruptedException, IOException, NodeKeeperException {
-        NodeKeeper nodeKeeper = new NodeKeeper(connection, 10, new Properties());
+        NodeKeeper nodeKeeper = new NodeKeeper(connection, 10000, new Properties());
         ZKBootstrap zkBootstrap = new ZKBootstrap(nodeKeeper);
-        zkBootstrap.load(file, true);
-        System.out.println("Successfully bootstrapped zookeeper at " + connection + " with data from " + file.getAbsolutePath() + " !");
+        if(type_is_import) {
+            zkBootstrap.load(file, clean);
+            System.out.println("Successfully bootstrapped zookeeper at " + connection + " with data from " + file.getAbsolutePath() + " !");
+        } else {
+            FileOutputStream out = new FileOutputStream(file);
+            zkBootstrap.write(out,root);
+            out.flush();
+            out.close();
+            System.out.println("Successfully stored zookeeper at " + connection + " in " + file.getAbsolutePath() + " !");
+        }
+
     }
 
     private Options buildOptions() {
@@ -69,9 +102,16 @@ public class ZKBootstrapCli {
         Option file = OptionBuilder.withArgName("file")
                                         .hasArg()
                                         .isRequired()
-                                        .withDescription("path to bootstrap properties file")
+                                        .withDescription("path to file")
                                         .withLongOpt("file")
                                         .create("f");
+
+        Option type = OptionBuilder.withArgName("type")
+                .hasArg()
+                .isRequired(false)
+                .withDescription("type import or export (default is import)")
+                .withLongOpt("type")
+                .create("t");
 
         Option connection = OptionBuilder.withArgName("connection")
                                         .hasArg()
@@ -80,17 +120,34 @@ public class ZKBootstrapCli {
                                         .withLongOpt("connection")
                                         .create("c");
 
+        Option root = OptionBuilder.withArgName("root")
+                .hasArg()
+                .isRequired(false)
+                .withDescription("root-node for export, default is /")
+                .withLongOpt("root")
+                .create("r");
+
+        Option clean = OptionBuilder.withArgName("clean")
+                .hasArg()
+                .isRequired(false)
+                .withDescription("if all nodes should be deleted before importing (default is false)")
+                .withLongOpt("clean")
+                .create("e");
+
 
         Options options = new Options();
         options.addOption(help);
         options.addOption(file);
         options.addOption(connection);
+        options.addOption(type);
+        options.addOption(root);
+        options.addOption(clean);
         return options;
     }
 
     private void displayUsage() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp( "java -jar nodekeeper-java-1.1-onejar.jar", buildOptions() );
+        formatter.printHelp( "java -jar nodekeeper-java-1.2-onejar.jar", buildOptions() );
         System.exit(-1);
     }
 
