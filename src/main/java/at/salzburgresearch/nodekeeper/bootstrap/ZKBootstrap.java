@@ -3,8 +3,11 @@ package at.salzburgresearch.nodekeeper.bootstrap;
 import at.salzburgresearch.nodekeeper.NodeKeeper;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -15,6 +18,8 @@ import java.util.Set;
  * Author: Thomas Kurz (tkurz@apache.org)
  */
 public class ZKBootstrap {
+
+    private Logger logger = LoggerFactory.getLogger(ZKBootstrap.class);
 
     private NodeKeeper nodeKeeper;
 
@@ -75,8 +80,10 @@ public class ZKBootstrap {
         }
         try {
             nodeKeeper.deleteNode(node);
+            logger.debug("Node {} deleted", node.getPath());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Node {} could not be deleted", node.getPath());
+            logger.debug(e.getMessage());
         }
     }
 }
