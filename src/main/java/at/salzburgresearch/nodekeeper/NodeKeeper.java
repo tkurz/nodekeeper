@@ -4,6 +4,7 @@ import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.handlers.DataHandler;
 import at.salzburgresearch.nodekeeper.handlers.impl.BooleanHandler;
 import at.salzburgresearch.nodekeeper.handlers.impl.IntegerHandler;
+import at.salzburgresearch.nodekeeper.handlers.impl.LongHandler;
 import at.salzburgresearch.nodekeeper.handlers.impl.StringDataHandler;
 import at.salzburgresearch.nodekeeper.model.Node;
 import org.apache.zookeeper.*;
@@ -76,6 +77,7 @@ public class NodeKeeper implements Watcher {
         this.addDataHandler(new StringDataHandler());
         this.addDataHandler(new IntegerHandler());
         this.addDataHandler(new BooleanHandler());
+        this.addDataHandler(new LongHandler());
 
         init(false);
     }
