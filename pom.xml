@@ -3,7 +3,7 @@
     <groupId>at.salzburgresearch.nodekeeper</groupId>
     <artifactId>nodekeeper-java</artifactId>
     <packaging>bundle</packaging>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
     <name>NodeKeeper Java</name>
     <description>NodeKeeper is a simple to use library on the top of ZooKeeper. It allows to create, read, update and delete zk-nodes, supports custom datatypes and allows to listen and react on node events (create, update, delete) based on path patterns.</description>
     <scm>
