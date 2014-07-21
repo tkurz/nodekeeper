@@ -3,9 +3,9 @@
 NodeKeeper is a simple to use library on the top of ZooKeeper. It allows to create, read, update and delete zk-nodes,
 supports custom datatypes and allows to listen and react on node events (create, update, delete) based on path patterns.
 
-**NEW RELEASE:** NodeKeeper 1.1 is now available in maven central. [Look here](http://mvnrepository.com/artifact/at.salzburgresearch.nodekeeper/nodekeeper-java/1.1) how you can use it via dependency (maven, gradle, etc).
+**NEW RELEASE:** NodeKeeper 1.2 is now available in maven central. [Look here](http://mvnrepository.com/artifact/at.salzburgresearch.nodekeeper/nodekeeper-java/1.2) how you can use it via dependency (maven, gradle, etc).
 
-**NEW FEATURE:** NodeKeeper now supports Event-Binding-Action rules. [Check it out!](#event-binding-action-rules)
+**NEW FEATURE:** NodeKeeper now has a better re-connection strategy, supports recursive node deletion and has an improved boostraping module.
 
 ##The NodeKeeper Instance
 The NodeKeeper instance must be initialized using the constructor:
