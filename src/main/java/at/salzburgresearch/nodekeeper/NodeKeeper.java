@@ -306,6 +306,27 @@ public class NodeKeeper implements Watcher {
         }
     }
 
+    public <T> void deleteNode(Node<T> node, boolean recursive) throws InterruptedException, NodeKeeperException {
+        if(recursive) {
+            cleanNode(node);
+        } else {
+            deleteNode(node);
+        }
+    }
+
+    /**
+     * remove nodes recursively
+     * @param node
+     * @throws NodeKeeperException
+     * @throws InterruptedException
+     */
+    private <T> void cleanNode(Node<T> node) throws NodeKeeperException, InterruptedException {
+        for(Node child : listChildrenNodes(node.getPath(), String.class)) { //TODO should not ne String
+            cleanNode(child);
+        }
+        deleteNode(node);
+    }
+
     public <T> Set<Node<T>> listChildrenNodes(String path, Class<T> clazz) throws InterruptedException, NodeKeeperException {
         try {
             Set<Node<T>> nodes = new HashSet<Node<T>>();

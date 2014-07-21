@@ -33,7 +33,7 @@ public class ZKBootstrap {
 
     public void load(InputStream is, boolean clean) throws IOException, NodeKeeperException, InterruptedException {
 
-        if(clean) cleanNode(new Node("/"));
+        if(clean) nodeKeeper.deleteNode(new Node("/"), true);
 
         Properties properties = new Properties();
         properties.load(is);
@@ -68,22 +68,4 @@ public class ZKBootstrap {
         }
     }
 
-    /**
-     * remove nodes recursively
-     * @param node
-     * @throws NodeKeeperException
-     * @throws InterruptedException
-     */
-    private void cleanNode(Node node) throws NodeKeeperException, InterruptedException {
-        for(Node child : nodeKeeper.listChildrenNodes(node.getPath(),String.class)) {
-            cleanNode(child);
-        }
-        try {
-            nodeKeeper.deleteNode(node);
-            logger.debug("Node {} deleted", node.getPath());
-        } catch (Exception e) {
-            logger.warn("Node {} could not be deleted", node.getPath());
-            logger.debug(e.getMessage());
-        }
-    }
 }

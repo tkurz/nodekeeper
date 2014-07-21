@@ -134,6 +134,25 @@ public class NodeKeeperReadWriteTest extends NodeKeeperTest {
     }
 
     @Test
+    public void deleteNodeRecusively() throws NodeKeeperException, InterruptedException, IOException {
+        int data = 123;
+        String path = "/node";
+        nodeKeeper.writeNode(new Node<Integer>(path + "/subnode/subsubnode",data),Integer.class);
+
+        Node<String> node1 = nodeKeeper.readNode(path,String.class);
+        Node<Integer> node2 = nodeKeeper.readNode(path + "/subnode/subsubnode",Integer.class);
+
+        assertTrue(node1 != null);
+        assertTrue(node2 != null);
+
+        nodeKeeper.deleteNode(node1, true);
+
+        Node<Integer> node3 = nodeKeeper.readNode(path,Integer.class);
+        assertTrue(node3 == null);
+
+    }
+
+    @Test
     public void deleteEmpytNode() throws NodeKeeperException, InterruptedException {
         int data = 123;
         String path = "/node";
