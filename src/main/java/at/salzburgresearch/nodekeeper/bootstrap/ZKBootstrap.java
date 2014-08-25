@@ -33,7 +33,13 @@ public class ZKBootstrap {
 
     public void load(InputStream is, boolean clean) throws IOException, NodeKeeperException, InterruptedException {
 
-        if(clean) nodeKeeper.deleteNode(new Node("/"), true);
+        if(clean) {
+            try {
+                nodeKeeper.deleteNode(new Node("/"), true);
+            } catch (Exception e) {
+                logger.warn(e.getMessage());
+            }
+        }
 
         Properties properties = new Properties();
         properties.load(is);
