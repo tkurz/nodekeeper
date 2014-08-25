@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rules>
+    <rule name="test_rule">
+        <event type="nodeCreated">
+            <param>/parent/.+</param>
+        </event>
+        <bindings>
+            <param name="label" type="currentNodeLabel"/>
+            <param name="result" type="or">
+                <param type="nodeData">
+                    <param>/indexdir</param>
+                </param>
+                <param type="concat">
+                    <param>/data/stanbol/indexes/</param>
+                    <param type="nodeData">
+                        <param type="concat">
+                            <param type="parentNode"/>
+                            <param>/instance</param>
+                        </param>
+                    </param>
+                </param>
+            </param>
+        </bindings>
+        <actions>
+            <action type="createUpdateNode">
+                <param>/result/{label}</param>
+                <param>{result}</param>
+            </action>
+        </actions>
+    </rule>
+</rules>

@@ -10,10 +10,7 @@ import org.junit.Test;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -146,6 +143,28 @@ public class SimpleRuleTests extends NodeKeeperTest {
 
         System.out.println(handler.getDescription());
 
+    }
+
+    @Test
+    public void testOrFunction() throws IOException, InterruptedException, NodeKeeperException {
+        InputStream in = new FileInputStream("src/test/resources/rules3.xml");
+
+        RuleHandler handler = new RuleHandler(nodeKeeper);
+        handler.readRules(in);
+
+        nodeKeeper.writeNode(new Node<String>("/parent/instance","instance123"),String.class);
+        nodeKeeper.writeNode(new Node<String>("/parent/node1","node1"),String.class);
+
+        Thread.sleep(2000);
+
+        Assert.assertEquals("/data/stanbol/indexes/instance123",nodeKeeper.readNode("/result/node1",String.class).getData());
+
+        nodeKeeper.writeNode(new Node<String>("/indexdir","/standard"),String.class);
+        nodeKeeper.writeNode(new Node<String>("/parent/node2","node2"),String.class);
+
+        Thread.sleep(2000);
+
+        Assert.assertEquals("/standard",nodeKeeper.readNode("/result/node2",String.class).getData());
     }
 
 
