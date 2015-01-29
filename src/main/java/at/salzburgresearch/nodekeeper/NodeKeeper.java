@@ -98,12 +98,12 @@ public class NodeKeeper implements Watcher {
                             zk.close();
                             init(true);
                         } catch (IOException e1) {
-                            log.error("cannot reconnect to zookeeper");
+                            log.error("cannot reconnect to zookeeper", e1);
                         } catch (NodeKeeperException e1) {
-                            log.error("cannot reconnect to zookeeper");
+                            log.error("cannot reconnect to zookeeper", e1);
                         } catch (InterruptedException e1) {
                             Thread.currentThread().interrupt();
-                            log.error("cannot reconnect to zookeeper");
+                            log.error("cannot reconnect to zookeeper", e1);
                         }
                         break;
                 }
@@ -187,13 +187,13 @@ public class NodeKeeper implements Watcher {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            e.printStackTrace();
+            log.error(String.format("Interupped while processing %s",watchedEvent),e);
         } catch (KeeperException e) {
-            //e.printStackTrace();
+            log.error(String.format("Error while processing %s",watchedEvent),e);
         } catch (NodeKeeperException e) {
-            //e.printStackTrace();
+            log.error(String.format("Error while processing %s",watchedEvent),e);
         } catch (IOException e) {
-            //e.printStackTrace();
+            log.error(String.format("Error while processing %s",watchedEvent),e);
         }
     }
 
@@ -235,7 +235,7 @@ public class NodeKeeper implements Watcher {
                 }
             }
         } catch (KeeperException e) {
-            throw new NodeKeeperException("cannot read node", e);
+            throw new NodeKeeperException(String.format("cannot read node %s (class: %s)",path,clazz), e);
         }
         return null;
     }
@@ -249,7 +249,7 @@ public class NodeKeeper implements Watcher {
                 zk.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
         } catch (KeeperException e) {
-            throw new NodeKeeperException(String.format("error while creating node '#s'", path), e);
+            throw new NodeKeeperException(String.format("error while creating node '%s'", path), e);
         }
     }
 

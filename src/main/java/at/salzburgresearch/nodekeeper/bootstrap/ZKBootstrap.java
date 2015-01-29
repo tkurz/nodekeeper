@@ -37,7 +37,7 @@ public class ZKBootstrap {
             try {
                 nodeKeeper.deleteNode(new Node("/"), true);
             } catch (Exception e) {
-                logger.warn(e.getMessage());
+                logger.warn(e.getMessage(), e);
             }
         }
 
