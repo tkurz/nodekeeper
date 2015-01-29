@@ -127,7 +127,7 @@ public class NodeKeeper implements Watcher {
             deleteRemoved();
             appendWatcherToSubnodes(startNode);
         } catch (KeeperException e) {
-            throw new NodeKeeperException("cannot append listeners");
+            throw new NodeKeeperException("cannot append listeners", e);
         }
     }
 
@@ -235,7 +235,7 @@ public class NodeKeeper implements Watcher {
                 }
             }
         } catch (KeeperException e) {
-            throw new NodeKeeperException("cannot read node");
+            throw new NodeKeeperException("cannot read node", e);
         }
         return null;
     }
@@ -249,7 +249,7 @@ public class NodeKeeper implements Watcher {
                 zk.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
         } catch (KeeperException e) {
-            throw new NodeKeeperException(String.format("error while creating node '#s'", path));
+            throw new NodeKeeperException(String.format("error while creating node '#s'", path), e);
         }
     }
 
@@ -284,7 +284,7 @@ public class NodeKeeper implements Watcher {
                 }
             }
         } catch (KeeperException e) {
-            throw new NodeKeeperException(String.format("cannot write data for node '%s'", node.getPath()));
+            throw new NodeKeeperException(String.format("cannot write data for node '%s'", node.getPath()), e);
         }
     }
 
@@ -302,7 +302,7 @@ public class NodeKeeper implements Watcher {
                 zk.delete(node.getPath(),stat.getVersion());
             }
         } catch (KeeperException e) {
-            throw new NodeKeeperException(String.format("cannot delete node '%s'", node.getPath()));
+            throw new NodeKeeperException(String.format("cannot delete node '%s'", node.getPath()), e);
         }
     }
 
@@ -336,9 +336,9 @@ public class NodeKeeper implements Watcher {
             }
             return nodes;
         } catch (KeeperException e) {
-            throw new NodeKeeperException(String.format("cannot read children for '%s'", path));
+            throw new NodeKeeperException(String.format("cannot read children for '%s'", path), e);
         } catch (IOException e) {
-            throw new NodeKeeperException(String.format("cannot read children for '%s'", path));
+            throw new NodeKeeperException(String.format("cannot read children for '%s'", path), e);
         }
     }
 
@@ -346,7 +346,7 @@ public class NodeKeeper implements Watcher {
         try {
             return zk.getChildren(path,false).size();
         } catch (KeeperException e) {
-            throw new NodeKeeperException(String.format("cannot read children for '%s'", path));
+            throw new NodeKeeperException(String.format("cannot read children for '%s'", path), e);
         }
     }
 
