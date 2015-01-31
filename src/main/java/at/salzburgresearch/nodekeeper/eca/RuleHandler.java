@@ -7,6 +7,9 @@ import at.salzburgresearch.nodekeeper.eca.function.FunctionFactory;
 import at.salzburgresearch.nodekeeper.eca.function.StaticValueFunction;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +37,8 @@ import java.util.Set;
  * Author: Thomas Kurz (tkurz@apache.org)
  */
 public class RuleHandler {
+    
+    private static final Logger log = LoggerFactory.getLogger(RuleHandler.class);
 
     HashMap<String,Rule> rules = new HashMap<String, Rule>();
     NodeKeeper nodeKeeper;
@@ -114,7 +120,7 @@ public class RuleHandler {
                 if(rule.event.type == Event.Type.nodeCreated || rule.event.type == Event.Type.nodeCreatedUpdated) try {
                     execute(node);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    log.error(String.format("Error on node created for %s",node), e);
                 }
             }
 
@@ -123,7 +129,7 @@ public class RuleHandler {
                 if(rule.event.type == Event.Type.nodeUpdated || rule.event.type == Event.Type.nodeCreatedUpdated) try {
                     execute(node);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    log.error(String.format("Error on node updated for %s",node), e);
                 }
             }
 
@@ -132,7 +138,7 @@ public class RuleHandler {
                 if(rule.event.type == Event.Type.nodeDeleted) try {
                     execute(node);
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    log.error(String.format("Error on node deleted for %s",node), e);
                 }
             }
 
@@ -292,11 +298,11 @@ public class RuleHandler {
                 return rules;
 
             } catch (ParserConfigurationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                log.error(e.getMessage(),e);
             } catch (SAXException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                log.error(e.getMessage(),e);
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                log.error(e.getMessage(),e);
             }
             return null;
         }

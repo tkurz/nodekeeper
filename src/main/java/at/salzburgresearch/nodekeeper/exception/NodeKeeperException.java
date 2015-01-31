@@ -11,4 +11,8 @@ public class NodeKeeperException extends Exception {
         super(msg);
     }
 
+    public NodeKeeperException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }
