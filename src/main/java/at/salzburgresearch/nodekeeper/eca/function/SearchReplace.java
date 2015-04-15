@@ -1,5 +1,8 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.salzburgresearch.nodekeeper.NodeKeeper;
 import at.salzburgresearch.nodekeeper.model.Node;
 
@@ -10,17 +13,21 @@ import at.salzburgresearch.nodekeeper.model.Node;
  */
 public class SearchReplace extends Function {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public Object execute(NodeKeeper nodeKeeper, Node current) {
         //first param is the string where values should be replaced
         String data = (String)((Function)params[0]).execute(nodeKeeper,current);
-
-        for(int i = 1; i < params.length; i++) {
-            String value = (String)((Function)params[i]).execute(nodeKeeper,current);
-            data = data.replaceAll("\\{"+i+"\\}",value);
+        if(data != null){
+            for(int i = 1; i < params.length; i++) {
+                String value = (String)((Function)params[i]).execute(nodeKeeper,current);
+                data = data.replaceAll("\\{"+i+"\\}",value);
+            }
+        } else {
+            log.warn("missing Node '{}'! return empty String", current != null ? current.getPath() : current);
+            data = "";
         }
-
         return data;
     }
 
