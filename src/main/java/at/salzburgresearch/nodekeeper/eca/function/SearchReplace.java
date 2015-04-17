@@ -1,5 +1,6 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ public class SearchReplace extends Function {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Object execute(NodeKeeper nodeKeeper, Node current) {
+    public Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException {
         //first param is the string where values should be replaced
         String data = (String)((Function)params[0]).execute(nodeKeeper,current);
         if(data != null){
@@ -25,8 +26,7 @@ public class SearchReplace extends Function {
                 data = data.replaceAll("\\{"+i+"\\}",value);
             }
         } else {
-            log.warn("missing Node '{}'! return empty String", current != null ? current.getPath() : current);
-            data = "";
+            throw new BindingException(String.format("missing Node '%s'! return empty String", current != null ? current.getPath() : current));
         }
         return data;
     }
