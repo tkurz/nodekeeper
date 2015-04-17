@@ -102,8 +102,17 @@ public class RuleHandler {
 
             private HashMap<String,String> bindVariables(Node node) {
                 HashMap<String,String> bindings = new HashMap<String, String>();
+                log.debug(" - bindVariables for node {}", node != null ? node.getPath() : node);
                 for(Binding binding : rule.bindings) {
-                    bindings.put(binding.name,binding.execute(nodekeeper,node));
+                    try {
+                        String result = binding.execute(nodekeeper,node);
+                        bindings.put(binding.name,result);
+                        log.debug("    {}: {}", binding.name,result);
+                    } catch (RuntimeException e){
+                        log.warn("Unable to execute Binding '" + binding.name
+                            +"' on node '"+node != null ? node.getPath() : node 
+                            + "'! Binding will be missing in returned map. ", e);
+                    }
                 }
                 return bindings;
             }
