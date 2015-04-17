@@ -1,16 +1,17 @@
 package at.salzburgresearch.nodekeeper.eca;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
-import at.salzburgresearch.nodekeeper.eca.function.StaticValueFunction;
+import at.salzburgresearch.nodekeeper.eca.exception.ActionException;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * ...
@@ -18,6 +19,8 @@ import java.util.List;
  * Author: Thomas Kurz (tkurz@apache.org)
  */
 public class Action {
+
+    private Logger logger = LoggerFactory.getLogger(Action.class);
 
     public enum Type {
         createUpdateNode,deleteNode
@@ -31,27 +34,42 @@ public class Action {
         this.args = args;
     }
 
-    public void execute(NodeKeeper nodeKeeper,HashMap<String,String> bindings) throws InterruptedException, NodeKeeperException, IOException {
-        switch(type) {
-            case createUpdateNode: createUpdateNode(nodeKeeper, bindings); break;
-            case deleteNode: deleteNode(nodeKeeper, bindings);
+    public void execute(NodeKeeper nodeKeeper,HashMap<String,Object> bindings) throws InterruptedException, NodeKeeperException, IOException, ActionException {
+        try {
+            switch(type) {
+                case createUpdateNode: createUpdateNode(nodeKeeper, bindings); break;
+                case deleteNode: deleteNode(nodeKeeper, bindings);
+            }
+        } catch (BindingException e) {
+            throw new ActionException(String.format("Action of type %s is not executed because: %s", type, e.getMessage()),e);
         }
     }
 
-    private void createUpdateNode(NodeKeeper nodeKeeper,HashMap<String,String> bindings) throws InterruptedException, IOException, NodeKeeperException {
+    private void createUpdateNode(NodeKeeper nodeKeeper,HashMap<String,Object> bindings) throws InterruptedException, IOException, NodeKeeperException, BindingException {
         nodeKeeper.writeNode(prepareNode(nodeKeeper,bindings),String.class);
     }
 
-    private void deleteNode(NodeKeeper nodeKeeper,HashMap<String,String> bindings) throws NodeKeeperException, InterruptedException {
+    private void deleteNode(NodeKeeper nodeKeeper,HashMap<String,Object> bindings) throws NodeKeeperException, InterruptedException, BindingException {
         nodeKeeper.deleteNode(prepareNode(nodeKeeper, bindings));
     }
 
-    private Node prepareNode(NodeKeeper nodeKeeper,HashMap<String,String> bindings) {
+    private Node prepareNode(NodeKeeper nodeKeeper,HashMap<String,Object> bindings) throws BindingException {
         String data = args.length > 1 ? args[1] : "";
         String label = args[0];
         for(String name : bindings.keySet()) {
-            data = data.replaceAll("\\{"+name+"\\}",bindings.get(name));
-            label = label.replaceAll("\\{"+name+"\\}", bindings.get(name));
+            String value;
+            if(bindings.get(name) instanceof BindingException) {
+                BindingException e = (BindingException) bindings.get(name);
+                if(e.isStrict()) {
+                    throw e;
+                } else {
+                    value = Binding.DEFAULT_BINDING;
+                }
+            } else {
+                value = (String)bindings.get(name);
+            }
+            data = data.replaceAll("\\{"+name+"\\}", value);
+            label = label.replaceAll("\\{"+name+"\\}", value);
         }
         Node<String> node = new Node<String>(label,data);
         return node;

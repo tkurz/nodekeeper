@@ -2,12 +2,12 @@ package at.salzburgresearch.nodekeeper.eca;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
 import at.salzburgresearch.nodekeeper.NodeListener;
+import at.salzburgresearch.nodekeeper.eca.exception.ActionException;
 import at.salzburgresearch.nodekeeper.eca.function.Function;
 import at.salzburgresearch.nodekeeper.eca.function.FunctionFactory;
 import at.salzburgresearch.nodekeeper.eca.function.StaticValueFunction;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -18,14 +18,14 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,23 +92,27 @@ public class RuleHandler {
         rule.setNodeListener(new NodeListener() {
 
             private void execute(Node node) throws InterruptedException, IOException, NodeKeeperException {
-                HashMap<String,String> bindings = bindVariables(node);
+                HashMap<String,Object> bindings = bindVariables(node);
                 if(checkConditions(bindings)) {
                     for(Action action : rule.actions) {
-                        action.execute(nodekeeper,bindings);
+                        try {
+                            action.execute(nodekeeper,bindings);
+                        } catch (ActionException e) {
+                            log.warn(e.getMessage(),e);
+                        }
                     }
                 }
             }
 
-            private HashMap<String,String> bindVariables(Node node) {
-                HashMap<String,String> bindings = new HashMap<String, String>();
+            private HashMap<String,Object> bindVariables(Node node) {
+                HashMap<String,Object> bindings = new HashMap<>();
                 log.debug(" - bindVariables for node {}", node != null ? node.getPath() : node);
                 for(Binding binding : rule.bindings) {
                     try {
-                        String result = binding.execute(nodekeeper,node);
+                        Object result = binding.execute(nodekeeper,node);
                         bindings.put(binding.name,result);
                         log.debug("    {}: {}", binding.name,result);
-                    } catch (RuntimeException e){
+                    } catch (RuntimeException e){               //TODO should not happen anymore
                         log.warn("Unable to execute Binding '" + binding.name
                             +"' on node '"+node != null ? node.getPath() : node 
                             + "'! Binding will be missing in returned map. ", e);
@@ -117,7 +121,7 @@ public class RuleHandler {
                 return bindings;
             }
 
-            private boolean checkConditions(HashMap<String,String> bindings) {
+            private boolean checkConditions(HashMap<String,Object> bindings) {
                 for(Condition condition : rule.conditions) {
                     if(!condition.execute(bindings)) return false;
                 }
@@ -223,14 +227,15 @@ public class RuleHandler {
 
                                     String name  = bindingElement.getAttribute("name");
                                     String type  = bindingElement.getAttribute("type");
+                                    Boolean strict  = bindingElement.hasAttribute("strict") ? Boolean.valueOf(bindingElement.getAttribute("strict")) : false;
 
                                     if(type==null || type.equals("")) {
                                         Function f = new StaticValueFunction();
                                         f.init(bindingElement.getTextContent().trim());
-                                        rule.bindings.add(new Binding(name,f));
+                                        rule.bindings.add(new Binding(name,f,strict));
                                     } else {
                                         Function f = createFunction(type,bindingElement.getChildNodes());
-                                        rule.bindings.add(new Binding(name,f));
+                                        rule.bindings.add(new Binding(name,f,strict));
                                     }
                                 }
                             }

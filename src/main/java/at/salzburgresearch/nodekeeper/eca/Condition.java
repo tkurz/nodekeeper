@@ -1,10 +1,12 @@
 package at.salzburgresearch.nodekeeper.eca;
 
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * ...
@@ -17,6 +19,8 @@ public class Condition {
 
     String arg1, arg2;
 
+    Logger log = LoggerFactory.getLogger(Condition.class);
+
     public Condition(Type type, String arg1, String arg2) {
         this.type = type;
         this.arg1 = arg1;
@@ -27,14 +31,26 @@ public class Condition {
         equals, notEquals, lowerThan, greaterThan, lowerThanEquals, greaterThanEquals
     }
 
-    public boolean execute(HashMap<String,String> bindings) {
+    public boolean execute(HashMap<String,Object> bindings) {
 
         String _arg1 = arg1;
         String _arg2 = arg2;
 
         for(String name : bindings.keySet()) {
-            _arg1 = _arg1.replaceAll("\\{"+name+"\\}",bindings.get(name));
-            _arg2 = _arg2.replaceAll("\\{"+name+"\\}", bindings.get(name));
+            if(bindings.get(name) instanceof BindingException) {
+                if(((BindingException)bindings.get(name)).isStrict()) {
+                    log.warn("Exception in bindings found. Condition failed", ((BindingException)bindings.get(name)));
+                    return false;
+                } else {
+                    _arg1 = _arg1.replaceAll("\\{"+name+"\\}",Binding.DEFAULT_BINDING);
+                    _arg2 = _arg2.replaceAll("\\{"+name+"\\}",Binding.DEFAULT_BINDING);
+                }
+
+            } else {
+                _arg1 = _arg1.replaceAll("\\{"+name+"\\}",(String)bindings.get(name));
+                _arg2 = _arg2.replaceAll("\\{"+name+"\\}",(String)bindings.get(name));
+            }
+
         }
 
         //test

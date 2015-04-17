@@ -1,6 +1,7 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
 
@@ -13,7 +14,7 @@ import java.io.IOException;
  */
 public class NodeData extends Function {
     @Override
-    public Object execute(NodeKeeper nodeKeeper, Node current) {
+    public Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException {
         try {
             Class clazz = params.length == 2 ? Class.forName((String)((Function)params[0]).execute(nodeKeeper,current)) : String.class;
             Node node = nodeKeeper.readNode((String)((Function)params[0]).execute(nodeKeeper,current),clazz);

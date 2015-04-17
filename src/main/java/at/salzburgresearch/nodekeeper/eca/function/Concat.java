@@ -1,6 +1,7 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.model.Node;
 
 /**
@@ -10,7 +11,7 @@ import at.salzburgresearch.nodekeeper.model.Node;
  */
 public class Concat extends Function {
     @Override
-    public Object execute(NodeKeeper nodeKeeper, Node current) {
+    public Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException {
         StringBuilder b = new StringBuilder();
         for(Object param : params) {
             b.append(((Function)param).execute(nodeKeeper,current));

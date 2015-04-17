@@ -1,6 +1,7 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.model.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +18,7 @@ public abstract class Function {
     public void init(Object... params) {
         this.params = params;
     }
-    public abstract Object execute(NodeKeeper nodeKeeper, Node current);
+    public abstract Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException;
     public abstract String getName();
 
     public abstract String getDescription();

@@ -1,17 +1,20 @@
 package at.salzburgresearch.nodekeeper.tests.ruleEngineTests;
 
 import at.salzburgresearch.nodekeeper.eca.*;
-import at.salzburgresearch.nodekeeper.eca.function.*;
+import at.salzburgresearch.nodekeeper.eca.function.CurrentNodeData;
+import at.salzburgresearch.nodekeeper.eca.function.CurrentNodeLabel;
 import at.salzburgresearch.nodekeeper.exception.NodeKeeperException;
 import at.salzburgresearch.nodekeeper.model.Node;
 import at.salzburgresearch.nodekeeper.tests.NodeKeeperTest;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.io.*;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * ...
@@ -26,8 +29,8 @@ public class SimpleRuleTests extends NodeKeeperTest {
 
         Rule rule = new Rule();
         rule.event = new Event(Event.Type.nodeCreated,"/my/event/.+");
-        rule.bindings.add(new Binding("name",new CurrentNodeLabel()));
-        rule.bindings.add(new Binding("data",new CurrentNodeData()));
+        rule.bindings.add(new Binding("name",new CurrentNodeLabel(),false));
+        rule.bindings.add(new Binding("data",new CurrentNodeData(),false));
         rule.actions.add(new Action(Action.Type.createUpdateNode,"/my/action/{name}","Hallo {data}"));
 
         ruleHandler.addRule(rule);
@@ -64,8 +67,8 @@ public class SimpleRuleTests extends NodeKeeperTest {
 
         Rule rule = new Rule();
         rule.event = new Event(Event.Type.nodeCreated,"/my/event/.+");
-        rule.bindings.add(new Binding("name",new CurrentNodeLabel()));
-        rule.bindings.add(new Binding("data",new CurrentNodeData()));
+        rule.bindings.add(new Binding("name",new CurrentNodeLabel(),false));
+        rule.bindings.add(new Binding("data",new CurrentNodeData(),false));
         rule.conditions.add(new Condition(Condition.Type.equals,"{name}","node1"));
         rule.actions.add(new Action(Action.Type.createUpdateNode,"/my/action/{name}","Hallo {data}"));
 
@@ -108,7 +111,7 @@ public class SimpleRuleTests extends NodeKeeperTest {
 
         Rule rule = new Rule();
         rule.event = new Event(Event.Type.nodeDeleted,"/my/event/.+");
-        rule.bindings.add(new Binding("$name",new CurrentNodeLabel()));
+        rule.bindings.add(new Binding("$name",new CurrentNodeLabel(),false));
         rule.actions.add(new Action(Action.Type.deleteNode,"/my/action/$name"));
 
         ruleHandler.addRule(rule);
@@ -167,5 +170,38 @@ public class SimpleRuleTests extends NodeKeeperTest {
         Assert.assertEquals("/standard",nodeKeeper.readNode("/result/node2",String.class).getData());
     }
 
+    @Test
+    public void testBindingStrictMode() throws IOException, InterruptedException, NodeKeeperException {
+        InputStream in = new FileInputStream("src/test/resources/rules2.xml");
+
+        RuleHandler handler = new RuleHandler(nodeKeeper);
+        handler.readRules(in);
+        Thread.sleep(2000);
+
+        nodeKeeper.writeNode(new Node<String>("/my/demo/test/set/version","0"),String.class);
+        Thread.sleep(2000);
+
+        Node<String> n = nodeKeeper.readNode("/stanbol/instances/sites/test/set_kiwi_yard", String.class);
+        Assert.assertNotNull(n);
+        Assert.assertEquals(Binding.DEFAULT_BINDING,n.getData());
+
+        in.close();
+    }
+
+    @Test
+    public void testBindingStrictModeTrue() throws IOException, InterruptedException, NodeKeeperException {
+        InputStream in = new FileInputStream("src/test/resources/rules4.xml");
+
+        RuleHandler handler = new RuleHandler(nodeKeeper);
+        handler.readRules(in);
+
+        nodeKeeper.writeNode(new Node<String>("/my/demo/test/set/version","0"),String.class);
+        Thread.sleep(2000);
+
+        Node<String> n = nodeKeeper.readNode("/stanbol/instances/sites/test/set_kiwi_yard", String.class);
+        Assert.assertNull(n);
+
+        in.close();
+    }
 
 }

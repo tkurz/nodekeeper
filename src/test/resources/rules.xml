@@ -9,10 +9,10 @@
             <binding name="label" type="toUpperCase">
                 <param type="currentNodeLabel"/>
             </binding>
-            <binding name="test" type="nodeData">
+            <binding strict="true" name="test" type="nodeData">
                 <param>/test/data</param>
             </binding>
-            <binding name="stat">Test</binding>
+            <binding strict="false" name="stat">Test</binding>
         </bindings>
         <conditions>
             <condition type="equals">

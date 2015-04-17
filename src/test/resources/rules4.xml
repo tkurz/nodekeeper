@@ -8,7 +8,7 @@
             <binding name="name" type="pathNode">
                 <param>4</param>
             </binding>
-            <binding strict="false" name="kiwi_yard" type="searchReplace">
+            <binding strict="true" name="kiwi_yard" type="searchReplace">
                 <param type="nodeData">
                     <param>/stanbol/factories/sites/test/test.config</param>
                 </param>
@@ -26,7 +26,7 @@
         </conditions>
         <actions>
             <action type="createUpdateNode">
-                <param>/stanbol/instances/sites/test/{name}_kiwi_yard</param>
+                <param>/stanbol/instances/sites/{name}_kiwi_yard</param>
                 <param>{kiwi_yard}</param>
             </action>
         </actions>

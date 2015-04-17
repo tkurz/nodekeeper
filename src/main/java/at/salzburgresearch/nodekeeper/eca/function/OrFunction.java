@@ -1,6 +1,7 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.model.Node;
 
 /**
@@ -11,7 +12,7 @@ import at.salzburgresearch.nodekeeper.model.Node;
 public class OrFunction extends Function {
 
     @Override
-    public Object execute(NodeKeeper nodeKeeper, Node current) {
+    public Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException {
         for(Object param : params) {
             Object value = ((Function)param).execute(nodeKeeper,current);
             if(value != null) return value;

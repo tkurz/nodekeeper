@@ -1,6 +1,7 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.model.Node;
 
 /**
@@ -11,7 +12,7 @@ import at.salzburgresearch.nodekeeper.model.Node;
 public class ToUpperCase extends Function {
 
     @Override
-    public Object execute(NodeKeeper nodeKeeper, Node current) {
+    public Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException {
         return ((String)((Function)params[0]).execute(nodeKeeper,current)).toUpperCase();
     }
 

@@ -1,6 +1,7 @@
 package at.salzburgresearch.nodekeeper.eca.function;
 
 import at.salzburgresearch.nodekeeper.NodeKeeper;
+import at.salzburgresearch.nodekeeper.eca.exception.BindingException;
 import at.salzburgresearch.nodekeeper.model.Node;
 
 /**
@@ -10,7 +11,7 @@ import at.salzburgresearch.nodekeeper.model.Node;
  */
 public class PathNode extends Function {
     @Override
-    public Object execute(NodeKeeper nodeKeeper, Node current) {
+    public Object execute(NodeKeeper nodeKeeper, Node current) throws BindingException {
         String[] path = current.getPath().split("/");
         int slot = Integer.parseInt(((String)((Function)params[0]).execute(nodeKeeper,current)));
         if(slot < path.length) return path[slot];
